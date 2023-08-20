@@ -56,7 +56,7 @@ model User {
     sessions      Session[]
     phone         String?
     address       String?
-    is_admin      Boolean
+    is_admin      Boolean   @default(false)
     wishlistId    Wishlist?
     cart          Cart?
     order         Order[]
