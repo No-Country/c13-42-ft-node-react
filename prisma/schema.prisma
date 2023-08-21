@@ -119,16 +119,18 @@ model VerificationToken {
 model Product {
     id            String    @id @default(cuid())
     name          String 
-    image         String[]
-    description   String
+    images        String[]
+    sub_title   String
+    gender        String
     total_sales   Int       @default(0)
     stars         Float     @default(0)
     current_price Float?
     price         Float
-    type          String
+    category        String
+    product_type    String
     brand         String
-    color         Boolean
-    size          Boolean
+    color         Boolean  @default(false)
+    size          Boolean   @default(true)
     stock         Int       @default(0)
     views         Int       @default(0)
     wishlists     Wishlist[]
