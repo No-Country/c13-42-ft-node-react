@@ -12,3 +12,4 @@ export const getProductsByID = async(id: any)=>{
     })
     return products
 }
+

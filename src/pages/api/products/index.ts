@@ -6,7 +6,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         case "GET":
             try {
                 console.log('hola');
-                
                 const products = await getProducts()
                 console.log(products);
                 
