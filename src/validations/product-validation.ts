@@ -14,6 +14,34 @@ export const findProductSchema = z.object({
 })
 })
 
+export const updateProductSchema = z.object({
+  query: z.object({
+    id: z
+      .string({
+        required_error: "id is required"
+      })
+      .min(3, {message: "id must be 3 char long"})
+      .trim()
+  }),
+  body: z.object({
+    data: z.object({
+      
+    })
+  })
+})
+
+export const deleteProductSchema = z.object({
+  query: z.object({
+    id: z
+      .string({
+        required_error: "id is required"
+      })
+      .min(3)
+      .trim(),
+    
+})
+})
+
 export const CreateProductSchema = z.object({
   body: z.object({
     name: z
@@ -67,4 +95,6 @@ export const CreateProductSchema = z.object({
 
 export type findProductType = z.infer<typeof findProductSchema>["query"];
 export type CreateProductType = z.infer<typeof CreateProductSchema>["body"];
+export type deleteProductType = z.infer<typeof deleteProductSchema>["query"];
+export type updateProductType = z.infer<typeof updateProductSchema>["body"];
 

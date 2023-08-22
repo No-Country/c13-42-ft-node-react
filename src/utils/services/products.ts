@@ -1,6 +1,6 @@
 import { Product } from "@prisma/client"
 import { prisma } from "~/server/db"
-import { CreateProductType } from "~/validations"
+import { CreateProductType, updateProductType } from "~/validations"
 
 export const getProducts = async()=>{
     const products:Product[] =  await prisma.product.findMany({})
@@ -10,6 +10,21 @@ export const getProducts = async()=>{
 export const getProductsByID = async(id: any)=>{
     const products:Product|null =  await prisma.product.findUnique({
         where:{id : id}
+    })
+    return products
+}
+
+export const deleteProductsByID = async(id: any)=>{
+    const products:Product|null =  await prisma.product.delete({
+        where:{id : id}
+    })
+    return products
+}
+
+export const updateProduct = async(id: any, data: any)=>{
+    const products:Product|null =  await prisma.product.update({
+        where:{id : id},
+        data: data
     })
     return products
 }
