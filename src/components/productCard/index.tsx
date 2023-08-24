@@ -17,7 +17,7 @@ const ProductCard = ({ product }: {product: Product} ) => {
   return (
 
 
-    <Link href="/productDetail">
+    <Link href={`/products/${product.id}`}>
         <div className='w-[15rem] h-[26rem] border border-grayLight rounded-md'>
             <div className='w-[15rem] h-[60%]'>
                 <img src={ product.images[0] } alt='producto' className='w-full h-full rounded-t-md'/>
