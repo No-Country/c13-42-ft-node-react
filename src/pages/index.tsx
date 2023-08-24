@@ -36,6 +36,7 @@ export interface Clothing {
 //       image: "/assets/clothing_3.jpg"
 //   },
 
+
 //   {
 //       id: 4,
 //       brand: "Nike",
@@ -53,7 +54,7 @@ export default function Home({products}:{ products: Product[]}) {
       <HeroSlider />
 
       <section className='mt-14 mx-[4%]'>
-        <h2 className='mb-7 text-lg font-semibold text-text'> Nuestra selección para ti </h2>
+        <h2 className='mb-7 text-lg font-semibold text-text'> Recommended for you </h2>
 
         <div className='flex flex-wrap justify-between'>
           {

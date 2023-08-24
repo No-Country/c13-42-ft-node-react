@@ -11,7 +11,9 @@ export default {
       text: "#211E1E",
       darkBackground: "#18181b",
       grayLight: "#d1d5db",
-      white: "#ffffff"
+      grayLightSoft: "#f9fafb",
+      white: "#ffffff",
+      modalBackground: "rgba(0, 0, 0, 0.8)"
     },
   },
   plugins: [],
