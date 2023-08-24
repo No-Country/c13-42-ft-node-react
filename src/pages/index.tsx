@@ -13,7 +13,7 @@ const products: Clothing[] = [
   {
       id: 1,
       brand: "Zara",
-      name: "Abrigo cachemir",
+      name: "Coat",
       price: 20,
       image: "/assets/clothing_4.jpg"
   },
@@ -21,7 +21,7 @@ const products: Clothing[] = [
   {
       id: 2,
       brand: "H&M",
-      name: "Pantalón chino azul",
+      name: "Blue pants",
       price: 10,
       image: "/assets/clothing_1.jpg"
   },
@@ -29,7 +29,7 @@ const products: Clothing[] = [
   {
       id: 3,
       brand: "Mango",
-      name: "Sobrecamisa amarilla",
+      name: "Yellow overshirt",
       price: 18,
       image: "/assets/clothing_3.jpg"
   },
@@ -51,7 +51,7 @@ export default function Home() {
       <HeroSlider />
 
       <section className='mt-14 mx-[4%]'>
-        <h2 className='mb-7 text-lg font-semibold text-text'> Nuestra selección para ti </h2>
+        <h2 className='mb-7 text-lg font-semibold text-text'> Recommended for you </h2>
 
         <div className='flex flex-wrap justify-between'>
           {
