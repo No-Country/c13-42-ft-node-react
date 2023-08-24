@@ -3,12 +3,19 @@
 import { useState } from "react"
 import { IconContext } from "react-icons"
 import { FaShoppingCart, FaHeart, FaSistrix, FaUser } from "react-icons/fa"
+import LoginModal from "../loginModal"
 
 
 const Navbar = () => {
 
   const [cartCount, setCartCount] = useState<number>(0)
-  const categories: string[]= ["Todas las categorías", "Remeras", "Pulóver", "Vestidos", "Pantalones", "Ropa interior", "Calzado", "Accesorios" ]
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const categories: string[]= ["All categories", "T-shirt", "Sweater", "Dress", "Jeans", "Underwear", "Footwear", "Offers" ]
+
+  const toggleModal = () => {
+    setIsModalOpen(false)
+  }
+
 
   return (
 
@@ -20,11 +27,11 @@ const Navbar = () => {
         <div className="flex">
           <div className="flex h-20 w-28 items-center justify-center text-sm font-normal hover:bg-secondary 
            hover:duration-300 hover:ease-in">
-            <p> Mujer </p>
+            <p> Woman </p>
           </div>
           <div className="flex h-20 w-28 items-center justify-center text-sm font-normal hover:bg-secondary 
             hover:duration-300 hover:ease-in" >
-            <p> Hombre </p>
+            <p> Man </p>
           </div>
         </div>
 
@@ -32,7 +39,7 @@ const Navbar = () => {
           <input 
             className="pl-9 w-[27rem] h-9 placeholder:text-sm placeholder:text-grayLight border
            border-grayLight rounded-md" 
-            placeholder="Buscar ropa, marcas, ofertas"  
+            placeholder="Search for clothes"  
           />
           <IconContext.Provider value={{ className:"absolute top-3 left-3 w-4 h-4" }} >
             <FaSistrix/>
@@ -58,8 +65,8 @@ const Navbar = () => {
             </div>
         </div>
 
-        <button className="w-40 h-9 text-sm text-white bg-secondary">
-          Crear cuenta
+        <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => setIsModalOpen(true) } >
+          Sign in
         </button>
       </div>
 
@@ -70,6 +77,14 @@ const Navbar = () => {
           </div>
         ))}
       </div>
+
+      {
+        isModalOpen && (
+          <LoginModal 
+            toggleModal = { toggleModal }
+          />
+        )
+      }  
         
     </nav>
   )
