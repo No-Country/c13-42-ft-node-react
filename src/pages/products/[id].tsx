@@ -14,7 +14,7 @@ const ProductDetail = ({product}: {product: Product|null}) => {
 
     <div className=' flex justify-between mt-20 ml-[10%] mr-[4%] h-auto'>
       <div className="w-[50%]" >
-        <img src={product?.images[0]} alt='' className='w-[70%] h-[24rem]'/>
+        <img src={product?.images[0]} alt='' className='w-[70%] h-[24rem] object-contain'/>
       </div>
 
       <div className="w-[42%]">
