@@ -7,21 +7,21 @@ export const getProducts = async()=>{
     return products
 }
 
-export const getProductsByID = async(id: any)=>{
+export const getProductsByID = async(id: string)=>{
     const products:Product|null =  await prisma.product.findUnique({
         where:{id : id}
     })
     return products
 }
 
-export const deleteProductsByID = async(id: any)=>{
+export const deleteProductsByID = async(id: string)=>{
     const products:Product|null =  await prisma.product.delete({
         where:{id : id}
     })
     return products
 }
 
-export const updateProduct = async(id: any, data: any)=>{
+export const updateProduct = async(id: string, data: updateProductType)=>{
     const products:Product|null =  await prisma.product.update({
         where:{id : id},
         data: data
