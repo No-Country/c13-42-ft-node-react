@@ -10,7 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             
             case "POST":
             try {
-                console.log('hola');
                 schemaValidation(upsertWishlistSchema, req, res)
                 const wishlist = await upsertWishlist(req.body)
                 console.log(wishlist);
@@ -28,7 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
             case "PATCH":
             try {
-                console.log('hola');
                 schemaValidation(updateWhislistSchema, req, res)
                 const wishlist = await updateWishlist(req.body)
                 console.log(wishlist);

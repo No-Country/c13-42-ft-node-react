@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             try {
                 schemaValidation(findProductSchema, req, res)
 
-                const { id } = req.query
+                const id: string|any  = req.query.id
                 const product = await getProductsByID(id)
                 console.log(product);
                 if (product) {
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               try {
                   schemaValidation(updateProductSchema, req, res)
   
-                  const { id } = req.query
+                  const  id : string|any = req.query.id
                   const {data} = req.body
                   const product = await updateProduct(id, data)
                   console.log(product);
@@ -56,13 +56,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     return res.status(400).json(error);
                   
               }
-            return 
-            break;
+            
             case "DELETE":
               try {
                   schemaValidation(deleteProductSchema, req, res)
   
-                  const { id } = req.query
+                  const id: string|any  = req.query.id
                   const product = await deleteProductsByID(id)
                   console.log(product);
                   if (product) {
@@ -82,8 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     return res.status(400).json(error);
                   
               }
-            return 
-            break;
+            
         
     
         default:
