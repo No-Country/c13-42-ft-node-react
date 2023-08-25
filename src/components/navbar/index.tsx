@@ -5,9 +5,13 @@ import { IconContext } from "react-icons"
 import { FaShoppingCart, FaHeart, FaSistrix, FaUser } from "react-icons/fa"
 import LoginModal from "../loginModal"
 import Link from "next/link"
+import { signOut, useSession } from "next-auth/react"
 
 
 const Navbar = () => {
+
+  const { data: session, status } = useSession()
+
 
   const [cartCount, setCartCount] = useState<number>(0)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -48,15 +52,26 @@ const Navbar = () => {
             <FaSistrix/>
           </IconContext.Provider>
         </div>
-
         <div className="flex items-center gap-8" >
+
+        {
+          session?.user &&  status == "authenticated"
+          ?
+          <>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} > 
             <FaHeart />
           </IconContext.Provider>
 
+          <Link href={`/user/${session?.user.id}`}>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} >   
             <FaUser />
           </IconContext.Provider>
+
+          </Link>
+          </>
+          : 
+          null
+        }
 
         <div className="relative" >
           <IconContext.Provider value={{ className:"h-5 w-5 text-text"}} >
@@ -68,9 +83,18 @@ const Navbar = () => {
             </div>
         </div>
 
-        <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => setIsModalOpen(true) } >
+        {
+         status == 'unauthenticated' || status === 'loading'
+         ?
+          <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => setIsModalOpen(true) } >
           Sign in
         </button>
+        : 
+        <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => signOut() } >
+          Sign out
+        </button>
+        
+        }
       </div>
 
       <div className="flex items-center px-[4%] w-full h-12 bg-darkBackground text-white">
