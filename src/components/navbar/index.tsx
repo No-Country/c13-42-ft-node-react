@@ -4,8 +4,10 @@ import { useState } from "react"
 import { IconContext } from "react-icons"
 import { FaShoppingCart, FaHeart, FaSistrix, FaUser } from "react-icons/fa"
 import LoginModal from "../loginModal"
+import CartModal from "../cartModal"
 import Link from "next/link"
 import { signOut, useSession } from "next-auth/react"
+
 
 
 const Navbar = () => {
@@ -15,10 +17,16 @@ const Navbar = () => {
 
   const [cartCount, setCartCount] = useState<number>(0)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false)
+
   const categories: string[]= ["All categories", "T-shirt", "Sweater", "Dress", "Jeans", "Underwear", "Footwear", "Offers" ]
 
   const toggleModal = () => {
     setIsModalOpen(false)
+  }
+
+  const toggleCartModal = () => {
+    setIsCartModalOpen(false)
   }
 
 
@@ -73,8 +81,8 @@ const Navbar = () => {
           null
         }
 
-        <div className="relative" >
-          <IconContext.Provider value={{ className:"h-5 w-5 text-text"}} >
+        <div className="relative" onClick={() => setIsCartModalOpen(true)} >
+          <IconContext.Provider value={{ className:"h-5 w-5 text-text cursor-pointer"}} >
             <FaShoppingCart />
               <div className="absolute bottom-2 left-3 flex justify-center items-center w-5 h-5 rounded-full  text-xs font-normal text-white bg-accent"> 
                 { Number(cartCount) } 
@@ -109,6 +117,14 @@ const Navbar = () => {
         isModalOpen && (
           <LoginModal 
             toggleModal = { toggleModal }
+          />
+        )
+      }
+
+      {
+        isCartModalOpen && (
+          <CartModal 
+            toggleCartModal={ toggleCartModal }
           />
         )
       }  
