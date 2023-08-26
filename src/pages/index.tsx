@@ -1,5 +1,6 @@
 import { Product } from "@prisma/client";
 import HeroSlider from "~/components/heroSlider";
+import Newsletter from "~/components/newsletter";
 import ProductCard from "~/components/productCard";
 import { getProducts } from "~/utils/services/products";
 
@@ -66,6 +67,10 @@ export default function Home({products}:{ products: Product[]}) {
             ))
           }
         </div>
+      </section>
+
+      <section className="mt-20">
+        <Newsletter />
       </section>
     </>
   );

@@ -91,7 +91,7 @@ const LoginModal = ({ toggleModal }: toggleFunction) => {
             </button>
 
             { toggleLogin && (
-                <p className="mt-8 text-xs font-light text-text text-center"> By creating and account you accept
+                <p className="mt-8 text-xs font-light text-text text-center"> By creating an account you accept
                   <span className="text-accent"> terms and conditions </span> 
                 </p>
               )
