@@ -5,6 +5,8 @@ import { IconContext } from "react-icons"
 import { FaShoppingCart, FaHeart, FaSistrix, FaUser } from "react-icons/fa"
 import LoginModal from "../loginModal"
 import CartModal from "../cartModal"
+import Link from "next/link"
+
 
 
 const Navbar = () => {
@@ -29,8 +31,10 @@ const Navbar = () => {
     <nav className="w-full h-auto text-text">
 
       <div className="flex justify-between items-center px-[4%] w-full h-20">
+        <Link href={'/'}>
         <p className="text-xl font-semibold"> hoodsy </p>
 
+        </Link>
         <div className="flex">
           <div className="flex h-20 w-28 items-center justify-center text-sm font-normal hover:bg-secondary 
            hover:duration-300 hover:ease-in">
