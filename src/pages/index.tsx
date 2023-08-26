@@ -1,4 +1,5 @@
 import HeroSlider from "~/components/heroSlider";
+import Newsletter from "~/components/newsletter";
 import ProductCard from "~/components/productCard";
 
 export interface Clothing {
@@ -63,6 +64,10 @@ export default function Home() {
             ))
           }
         </div>
+      </section>
+
+      <section className="mt-20">
+        <Newsletter />
       </section>
     </>
   );
