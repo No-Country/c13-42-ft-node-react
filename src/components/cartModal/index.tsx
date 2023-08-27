@@ -128,8 +128,10 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
                     </div>
 
                     <button disabled={!url} onClick={(e) => {
-                        e.preventDefault()
-                        router.push(url)
+                        if (url) {
+                            e.preventDefault()
+                            router.push(url)
+                        }
                     }} className={`mt-4 mb-5 w-[100%] h-11  ${!url ? 'bg-gray': 'bg-blackZinc'}  text-sm text-white`}>
                         Checkout
                     </button>
