@@ -13,7 +13,9 @@ export default {
       grayLight: "#d1d5db",
       grayLightSoft: "#f9fafb",
       white: "#ffffff",
-      modalBackground: "rgba(0, 0, 0, 0.8)"
+      modalBackground: "rgba(0, 0, 0, 0.8)",
+      whiteLight: "rgb(241 245 249)",
+      black: "#000",
     },
   },
   plugins: [],

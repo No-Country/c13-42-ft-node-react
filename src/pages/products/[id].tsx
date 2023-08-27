@@ -12,12 +12,12 @@ const ProductDetail = ({product}: {product: Product|null}) => {
 
   return (
 
-    <div className=' flex justify-between mt-20 ml-[10%] mr-[4%] h-auto'>
-      <div className="w-[50%]" >
-        <img src={product?.images[0]} alt='' className='w-[70%] h-[24rem] object-contain'/>
+    <div className=' flex justify-between my-20 ml-[10%] mr-[4%] h-auto flex-col md:flex-row'>
+      <div className="w-[100%] md:w-[50%]" >
+        <img src={product?.images[0]} alt='' className='w-[100%] h-[24rem] object-contain'/>
       </div>
 
-      <div className="w-[42%]">
+      <div className="w-[100%] md:w-[42%]">
         <p className="mt-6 mb-1 text-sm font-medium text-text" > {product?.gender} | {product?.product_type} </p>
         <h2 className="mb-2 text-3xl font-semibold text-text"> {product?.name} </h2>
         <p className="mt-2 mb-1 text-sm font-medium text-text" > {product?.sub_title} </p>

@@ -3,7 +3,6 @@ import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import Navbar from "~/components/navbar";
 import "~/styles/globals.css";
-
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
@@ -11,7 +10,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <Navbar />
-      <Component {...pageProps} />
+      <Component { ...pageProps} />
     </SessionProvider>
   );
 };

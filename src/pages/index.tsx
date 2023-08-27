@@ -2,7 +2,6 @@ import { Product } from "@prisma/client";
 import HeroSlider from "~/components/heroSlider";
 import ProductCard from "~/components/productCard";
 import { getProducts } from "~/utils/services/products";
-
 export interface Clothing {
   id: number,
   brand: string,
@@ -48,15 +47,16 @@ export interface Clothing {
 
 
 
-export default function Home({products}:{ products: Product[]}) {
+export default function Home( { products }: { products: Product[] }) {
+    console.log(products)
   return (
     <>
+      
       <HeroSlider />
-
       <section className='mt-14 mx-[4%]'>
         <h2 className='mb-7 text-lg font-semibold text-text'> Recommended for you </h2>
 
-        <div className='flex flex-wrap justify-between'>
+        <div className='grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4'>
           {
             products.map((product)  => (
               <ProductCard
@@ -64,22 +64,18 @@ export default function Home({products}:{ products: Product[]}) {
                 product={ product }
               />
             ))
-          }
+            }
         </div>
       </section>
     </>
   );
 }
 
-
 export async function getServerSideProps() {
-  // Fetch data from external API
   try {
-    const products: Product[]  = await getProducts()
-    return { props: { products: products.slice(0,4) } }
+    const products: Product[]  = await getProducts();
+    return { props: { products: products.slice(0, 5) } };
   } catch (error) {
     console.log(error);
-    
   }
-  
 }

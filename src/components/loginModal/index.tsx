@@ -10,7 +10,6 @@ interface toggleFunction {
   toggleModal: () => void
 }
 
-
 const LoginModal = ({ toggleModal }: toggleFunction) => {
 
   const [inputMail, setInputMail] = useState<string>("")
@@ -20,7 +19,7 @@ const LoginModal = ({ toggleModal }: toggleFunction) => {
 
   return (
 
-    <div className='absolute top-0 left-0 z-20 flex justify-center items-center w-full h-full bg-modalBackground'>
+    <div className='fixed top-0 left-0 z-20 flex justify-center items-center w-full h-full bg-modalBackground'>
         <div className='relative w-[37rem] h-[32rem] bg-grayLightSoft'>
             <div className='mt-6 flex justify-center' >
                 <button 
