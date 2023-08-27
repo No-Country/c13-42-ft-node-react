@@ -1,12 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { redirect } from 'next/dist/server/api-utils'
-import { Router, useRouter } from 'next/router'
+import {  useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { IconContext } from 'react-icons'
 import { FaRegTimesCircle, FaTrash } from "react-icons/fa"
-import { getCheckoutUrl } from '~/utils/checkout'
 
 interface functionToggleCart {
     toggleCartModal: () => void
