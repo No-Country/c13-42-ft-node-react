@@ -3,13 +3,14 @@ import mercadopago from 'mercadopago'
 import { env } from "~/env.mjs";
 import { CreatePreferencePayload } from "mercadopago/models/preferences/create-payload.model";
 import { baseUrl } from "~/utils/constants";
+import { redirect } from "next/dist/server/api-utils";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     mercadopago.configure({
         access_token: env.MP_TOKEN
     });
     
-    if (req.method === "GET") {
+    if (req.method === "POST") {
         const preference: CreatePreferencePayload = {
             items: [
               {
@@ -32,10 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             
           };
-          
-          const result = await mercadopago.preferences.create(preference)
-          console.log(result);
-          res.status(200).send({url: result.body.init})
+          console.log(req.body);
+          const result = await mercadopago.preferences.create(preference)          
+          res.status(200).send({url: result.body.init_point})
         }else{
             res.status(400).json({message: "method not allowed"})
         }

@@ -1,9 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { useState } from 'react'
+import { redirect } from 'next/dist/server/api-utils'
+import { Router, useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { IconContext } from 'react-icons'
 import { FaRegTimesCircle, FaTrash } from "react-icons/fa"
+import { getCheckoutUrl } from '~/utils/checkout'
 
 interface functionToggleCart {
     toggleCartModal: () => void
@@ -11,9 +14,14 @@ interface functionToggleCart {
 
 const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
 
+    const router = useRouter()
+
+
   const [cart, setCart] = useState<number>(2)
   const [cartCount, setCartCount] = useState<number>(1)  
 
+    const [url, seturl] = useState<null|string>(null)
+  
   const addCount = () => {
     setCartCount( prev => prev  + 1 )
   }
@@ -22,6 +30,35 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
     if(cartCount <= 1 ) return
     setCartCount( prev => prev - 1 )
   }
+
+  useEffect(() => {
+    const getCheckoutUrl = async () => {
+        const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+            method: 'POST', 
+            mode: 'cors', 
+            cache: 'no-cache',
+            credentials: 'same-origin', 
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow', 
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({user: 'hola', products: 'sda'}) 
+          });
+          response.json().then(data => {
+            console.log(data);
+            seturl(data.url)
+          }).catch((error) => {
+            console.log(error)
+            seturl(null) 
+        })
+    }
+
+    getCheckoutUrl()
+    
+  }, [cart])
+  
+
 
   return (
 
@@ -92,7 +129,10 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
                         <p className='text-xs font-semibold text-text' > FREE </p> 
                     </div>
 
-                    <button className='mt-4 mb-5 w-[100%] h-11 bg-blackZinc text-sm text-white'>
+                    <button disabled={!url} onClick={(e) => {
+                        e.preventDefault()
+                        router.push(url)
+                    }} className={`mt-4 mb-5 w-[100%] h-11  ${!url ? 'bg-gray': 'bg-blackZinc'}  text-sm text-white`}>
                         Checkout
                     </button>
                 </div>
