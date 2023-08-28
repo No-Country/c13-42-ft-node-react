@@ -12,13 +12,16 @@ interface functionToggleCart {
 
 const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
 
-    const router = useRouter()
+const router = useRouter()
 
 
-  const [cart, setCart] = useState<number>(2)
-  const [cartCount, setCartCount] = useState<number>(1)  
+const [cart, setCart] = useState<number>(2)
+const [cartCount, setCartCount] = useState<number>(1)  
 
-    const [url, seturl] = useState<null|string>(null)
+const [url, seturl] = useState<null|string>(null)
+const [id, setId] = useState<string>('')
+
+
   
   const addCount = () => {
     setCartCount( prev => prev  + 1 )
@@ -46,6 +49,7 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
           response.json().then(data => {
             console.log(data);
             seturl(data.url)
+            setId(data.id)
           }).catch((error) => {
             console.log(error)
             seturl(null) 
@@ -55,6 +59,28 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
     getCheckoutUrl()
     
   }, [cart])
+
+
+  const handleCreateOrder =async ()=>{
+    const response = await fetch(`http://localhost:3000/api/v0/orders`, {
+        method: 'POST', 
+        mode: 'cors', 
+        cache: 'no-cache',
+        credentials: 'same-origin', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow', 
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({id: id,userId: 'cllr0zobc00001f6mr0jvevf4', products: [{id: '2e6701f7-951f-5907-ad5e-90d7266f3e0e'},], total : 100}) 
+      });
+      response.json().then(data => {
+        console.log(data);
+        
+      }).catch((error) => {
+        console.log(error)
+    })
+  }
   
 
 
@@ -129,8 +155,13 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
 
                     <button disabled={!url} onClick={(e) => {
                         if (url) {
-                            e.preventDefault()
-                            router.push(url)
+                            try {
+                                e.preventDefault()
+                                router.push(url)
+                                handleCreateOrder()
+                            } catch (error) {
+                                
+                            }
                         }
                     }} className={`mt-4 mb-5 w-[100%] h-11  ${!url ? 'bg-gray': 'bg-blackZinc'}  text-sm text-white`}>
                         Checkout

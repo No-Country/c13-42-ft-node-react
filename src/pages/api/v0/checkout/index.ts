@@ -14,6 +14,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const preference: CreatePreferencePayload = {
             items: [
               {
+                id:'1234',
+                
                 title: 'Test',
                 quantity: 1,
                 currency_id: 'ARS',
@@ -22,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ],
             auto_return: "approved",
             back_urls:{
-                success: `${baseUrl}/`,
+                success: `${baseUrl}/success`,
                 failure:`${baseUrl}/`
             },
             payer:{
@@ -35,7 +37,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           };
           console.log(req.body);
           const result = await mercadopago.preferences.create(preference)          
-          res.status(200).send({url: result.body.init_point})
+          console.log(result);
+          
+          res.status(200).send({url: result.body.init_point, id: result.body.id})
         }else{
             res.status(400).json({message: "method not allowed"})
         }
