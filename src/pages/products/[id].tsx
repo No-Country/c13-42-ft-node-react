@@ -6,12 +6,14 @@ import { GetServerSidePropsContext } from "next"
 import { IconContext } from "react-icons"
 import { FaTruck } from "react-icons/fa"
 import { HiOutlineReceiptRefund } from "react-icons/hi"
-import { getProductsByID } from "~/utils/services/products"
+import Navbar from "~/components/navbar"
+import { getProductsByID, getProducts } from "~/utils/services/products"
 
-const ProductDetail = ({product}: {product: Product|null}) => {
+const ProductDetail = ({product, products}: {product: Product|null}) => {
 
   return (
-
+    <>
+    <Navbar products={products}/>
     <div className=' flex justify-between mt-20 ml-[10%] mr-[4%] h-auto'>
       <div className="w-[50%]" >
         <img src={product?.images[0]} alt='' className='w-[70%] h-[24rem] object-contain'/>
@@ -43,16 +45,14 @@ const ProductDetail = ({product}: {product: Product|null}) => {
           Add to cart 
         </button>
 
-      </div>
-      
-     
-        
+      </div>        
             
        
 
         
       
     </div>
+    </>
   )
 }
 
@@ -65,9 +65,10 @@ export async function getServerSideProps({query}: GetServerSidePropsContext) {
 
   // Fetch data from external API
   try {
+    const products: Product[]  = await getProducts()
     const product: Product|null  = await getProductsByID(id)
     if (product) {
-      return { props: { product } }
+      return { props: { product, products: products } }
     }else{
       return {
         redirect: {

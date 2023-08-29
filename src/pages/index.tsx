@@ -3,7 +3,7 @@ import HeroSlider from "~/components/heroSlider";
 import Newsletter from "~/components/newsletter";
 import ProductCard from "~/components/productCard";
 import { getProducts } from "~/utils/services/products";
-
+import Navbar from "~/components/navbar";
 export interface Clothing {
   id: number,
   brand: string,
@@ -52,14 +52,15 @@ export interface Clothing {
 export default function Home({products}:{ products: Product[]}) {
   return (
     <>
+      <Navbar products={products} />
+
       <HeroSlider />
 
-      <section className='mt-14 mx-[4%]'>
+      <section className='mt-14 mx-[2%]'>
         <h2 className='mb-7 text-lg font-semibold text-text'> Recommended for you </h2>
 
-        <div className='flex flex-wrap justify-between'>
-          {
-            products.map((product)  => (
+        <div className="justify-center items-center grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-4 my-14 mx-[2%]">          {
+            products.slice(0,4).map((product)  => (
               <ProductCard
                 key={ product.id } 
                 product={ product }
@@ -81,7 +82,7 @@ export async function getServerSideProps() {
   // Fetch data from external API
   try {
     const products: Product[]  = await getProducts()
-    return { props: { products: products.slice(0,4) } }
+    return { props: { products: products } }
   } catch (error) {
     console.log(error);
     
