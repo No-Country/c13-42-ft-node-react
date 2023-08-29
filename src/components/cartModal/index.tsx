@@ -1,16 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
+import { User } from 'next-auth'
 import {  useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { IconContext } from 'react-icons'
 import { FaRegTimesCircle, FaTrash } from "react-icons/fa"
 
 interface functionToggleCart {
-    toggleCartModal: () => void
+    toggleCartModal: () => void,
+    user: User|undefined
 }
 
-const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
+const CartModal = ({ toggleCartModal, user }: functionToggleCart  ) => {
 
 const router = useRouter()
 
@@ -34,7 +36,17 @@ const [id, setId] = useState<string>('')
 
   useEffect(() => {
     const getCheckoutUrl = async () => {
-        const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+        const products = [
+              {
+                id:'2e6701f7-951f-5907-ad5e-90d7266f3e0e',
+                title: 'Justin Fields Chicago Bears',
+                quantity: 1,
+                currency_id: 'USD',
+                unit_price: 175,
+              }
+            ]
+        if (user) {
+            const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
             method: 'POST', 
             mode: 'cors', 
             cache: 'no-cache',
@@ -44,7 +56,16 @@ const [id, setId] = useState<string>('')
             },
             redirect: 'follow', 
             referrerPolicy: 'no-referrer',
-            body: JSON.stringify({user: 'hola', products: 'sda'}) 
+            // products: [
+            //   {
+            //     id:'1234',
+            //     title: 'Test',
+            //     quantity: 1,
+            //     currency_id: 'USD',
+            //     unit_price: 10.5
+            //   }
+            // ],
+            body: JSON.stringify({user: user?.email, products: products}) 
           });
           response.json().then(data => {
             console.log(data);
@@ -54,6 +75,9 @@ const [id, setId] = useState<string>('')
             console.log(error)
             seturl(null) 
         })
+        } 
+        // handle not user (redirect to login)
+
     }
 
     getCheckoutUrl()
@@ -62,7 +86,8 @@ const [id, setId] = useState<string>('')
 
 
   const handleCreateOrder =async ()=>{
-    const response = await fetch(`http://localhost:3000/api/v0/orders`, {
+    if (user) {
+        const response = await fetch(`http://localhost:3000/api/v0/orders`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',
@@ -72,7 +97,8 @@ const [id, setId] = useState<string>('')
         },
         redirect: 'follow', 
         referrerPolicy: 'no-referrer',
-        body: JSON.stringify({id: id,userId: 'cllr0zobc00001f6mr0jvevf4', products: [{id: '2e6701f7-951f-5907-ad5e-90d7266f3e0e'},], total : 100}) 
+        // products in cart [{id: '2e6701f7-951f-5907-ad5e-90d7266f3e0e'}, ...]
+        body: JSON.stringify({id: id,userId: user?.id, products: [{id: '2e6701f7-951f-5907-ad5e-90d7266f3e0e'},], total : 100}) 
       });
       response.json().then(data => {
         console.log(data);
@@ -80,6 +106,10 @@ const [id, setId] = useState<string>('')
       }).catch((error) => {
         console.log(error)
     })
+    }
+
+    // handle not user (redirect to login)
+
   }
   
 

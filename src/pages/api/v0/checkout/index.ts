@@ -12,34 +12,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     if (req.method === "POST") {
         const preference: CreatePreferencePayload = {
-            items: [
-              {
-                id:'1234',
-                
-                title: 'Test',
-                quantity: 1,
-                currency_id: 'ARS',
-                unit_price: 10.5
-              }
-            ],
+            items: req.body.products,
+            // [
+            //   {
+            //     id:'1234',
+            //     title: 'Test',
+            //     quantity: 1,
+            //     currency_id: 'USD',
+            //     unit_price: 10.5
+            //   }
+            // ],
             auto_return: "approved",
             back_urls:{
                 success: `${baseUrl}/success`,
                 failure:`${baseUrl}/`
             },
             payer:{
-                email: "santisonzini1234@gmail.com",
-                name:'santiago',
+                email: req.body.user,
                 
             }
 
             
           };
           console.log(req.body);
-          const result = await mercadopago.preferences.create(preference)          
-          console.log(result);
+          if (req.body.products && req.body.user) {
+            const result = await mercadopago.preferences.create(preference)          
+            console.log(result);
+            res.status(200).send({url: result.body.init_point, id: result.body.id})
+
+          }else{
+            res.status(400).json({message: "missing products or user"})
+
+          }
           
-          res.status(200).send({url: result.body.init_point, id: result.body.id})
+          
         }else{
             res.status(400).json({message: "method not allowed"})
         }

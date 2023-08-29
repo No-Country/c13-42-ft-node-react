@@ -8,19 +8,34 @@ import Link from "next/link"
 import { AiOutlineMenu } from "react-icons/ai"
 import SearchProducts from "../searchProducts"
 import { Product } from "@prisma/client"
+import { useSession } from "next-auth/react"
+import CartModal from "../cartModal"
 
 export const SearchContext = createContext();
 
 const Navbar = ( { products }: { products: Product[] } ) => {
 
+
+  const { data: session, status } = useSession()
+
+
   const [cartCount, setCartCount] = useState<number>(0)
+
+
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [menu, setMenu] = useState<boolean>(false)
   const [searchModal, setSearchModal] = useState<boolean>(false)
+  const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false)
+
 
 
   const categories: string[]= ["All", "American Football", "Baseball", "Basketball", "Football", "Footwear", "Lifestyle", "Running", "Soccer"] 
 
+
+  const toggleCartModal = () => {
+    setIsCartModalOpen(false)
+  }
   const toggleModal = () => {    
     setIsModalOpen(false)
   }
@@ -68,15 +83,26 @@ const Navbar = ( { products }: { products: Product[] } ) => {
               <FaSistrix/>
             </IconContext.Provider>
           </div>
+          {
+          session?.user &&  status == "authenticated"
+          ?
+          <>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} > 
             <FaHeart />
           </IconContext.Provider>
 
+          <Link href={`/user/${session?.user.id}`}>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} >   
             <FaUser />
           </IconContext.Provider>
 
-          <div className="relative" >
+          </Link>
+          </>
+          : 
+          null
+        }
+
+          <div className="relative" onClick={() => setIsCartModalOpen(true)}>
             <IconContext.Provider value={{ className:"h-5 w-5 text-text"}} >
             <FaShoppingCart />
               <div className="absolute bottom-2 left-3 flex justify-center items-center w-5 h-5 rounded-full  text-xs font-normal text-white bg-accent"> 
@@ -86,9 +112,18 @@ const Navbar = ( { products }: { products: Product[] } ) => {
           </div>
         </div>
 
-        <button className="w-40 h-9 hidden lg:block text-sm text-white bg-secondary" onClick={() => setIsModalOpen(true) } >
+        {
+         status == 'unauthenticated' || status === 'loading'
+         ?
+          <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => setIsModalOpen(true) } >
           Sign in
         </button>
+        : 
+        <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => signOut() } >
+          Sign out
+        </button>
+        
+        }
       </div>
 
       <div className="hidden lg:flex items-center px-[4%] w-full h-auto bg-darkBackground text-white">
@@ -161,6 +196,14 @@ const Navbar = ( { products }: { products: Product[] } ) => {
         </div>
       )
     }
+    {
+        isCartModalOpen && (
+          <CartModal 
+            user={session?.user}
+            toggleCartModal={ toggleCartModal }
+          />
+        )
+      }
     </SearchContext.Provider>
   )
 }
