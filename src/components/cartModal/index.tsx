@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { useState } from 'react'
+import {  useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { IconContext } from 'react-icons'
 import { FaRegTimesCircle, FaTrash } from "react-icons/fa"
 
@@ -11,9 +12,17 @@ interface functionToggleCart {
 
 const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
 
-  const [cart, setCart] = useState<number>(2)
-  const [cartCount, setCartCount] = useState<number>(1)  
+const router = useRouter()
 
+
+const [cart, setCart] = useState<number>(2)
+const [cartCount, setCartCount] = useState<number>(1)  
+
+const [url, seturl] = useState<null|string>(null)
+const [id, setId] = useState<string>('')
+
+
+  
   const addCount = () => {
     setCartCount( prev => prev  + 1 )
   }
@@ -22,6 +31,58 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
     if(cartCount <= 1 ) return
     setCartCount( prev => prev - 1 )
   }
+
+  useEffect(() => {
+    const getCheckoutUrl = async () => {
+        const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+            method: 'POST', 
+            mode: 'cors', 
+            cache: 'no-cache',
+            credentials: 'same-origin', 
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow', 
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify({user: 'hola', products: 'sda'}) 
+          });
+          response.json().then(data => {
+            console.log(data);
+            seturl(data.url)
+            setId(data.id)
+          }).catch((error) => {
+            console.log(error)
+            seturl(null) 
+        })
+    }
+
+    getCheckoutUrl()
+    
+  }, [cart])
+
+
+  const handleCreateOrder =async ()=>{
+    const response = await fetch(`http://localhost:3000/api/v0/orders`, {
+        method: 'POST', 
+        mode: 'cors', 
+        cache: 'no-cache',
+        credentials: 'same-origin', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow', 
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify({id: id,userId: 'cllr0zobc00001f6mr0jvevf4', products: [{id: '2e6701f7-951f-5907-ad5e-90d7266f3e0e'},], total : 100}) 
+      });
+      response.json().then(data => {
+        console.log(data);
+        
+      }).catch((error) => {
+        console.log(error)
+    })
+  }
+  
+
 
   return (
 
@@ -92,7 +153,17 @@ const CartModal = ({ toggleCartModal }: functionToggleCart  ) => {
                         <p className='text-xs font-semibold text-text' > FREE </p> 
                     </div>
 
-                    <button className='mt-4 mb-5 w-[100%] h-11 bg-blackZinc text-sm text-white'>
+                    <button disabled={!url} onClick={(e) => {
+                        if (url) {
+                            try {
+                                e.preventDefault()
+                                router.push(url)
+                                handleCreateOrder()
+                            } catch (error) {
+                                
+                            }
+                        }
+                    }} className={`mt-4 mb-5 w-[100%] h-11  ${!url ? 'bg-gray': 'bg-blackZinc'}  text-sm text-white`}>
                         Checkout
                     </button>
                 </div>
