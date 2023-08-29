@@ -8,7 +8,7 @@ import Link from "next/link"
 import { AiOutlineMenu } from "react-icons/ai"
 import SearchProducts from "../searchProducts"
 import { Product } from "@prisma/client"
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import CartModal from "../cartModal"
 
 export const SearchContext = createContext();
