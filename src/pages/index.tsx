@@ -1,6 +1,7 @@
 import HeroSlider from "~/components/heroSlider";
 import Newsletter from "~/components/newsletter";
 import ProductCard from "~/components/productCard";
+import ShareYourOutfit from "~/components/shareYourOutfit";
 
 export interface Clothing {
   id: number,
@@ -68,6 +69,10 @@ export default function Home() {
 
       <section className="mt-20">
         <Newsletter />
+      </section>
+
+      <section>
+        <ShareYourOutfit />
       </section>
     </>
   );

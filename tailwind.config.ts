@@ -19,7 +19,8 @@ export default {
       grayDark: "#374151",
       blackZinc: "#27272a",
       white: "#ffffff",
-      modalBackground: "rgba(0, 0, 0, 0.8)"
+      modalBackground: "rgba(0, 0, 0, 0.8)",
+      warning: "#ef4444"
     },
   },
   plugins: [],
