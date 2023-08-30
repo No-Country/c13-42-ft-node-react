@@ -7,6 +7,8 @@ import { updateWhislistSchema, upsertWishlistSchema } from "~/validations/wishli
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     switch (req.method) {
         case "GET":
+          return res.status(404).json({message: "method not availible"});
+
             
             case "POST":
             try {
