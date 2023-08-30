@@ -12,6 +12,18 @@ export const getProductsByID = async(id: string)=>{
         where:{id : id},
         include: {
             reviews: true,
+            orders: {
+                select:{
+                    userID: true
+                }
+            },
+            questions: {
+                
+                include:{
+                    answer: true,
+                    user: true
+                }
+            }
         }
     })
     return products
