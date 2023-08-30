@@ -1,5 +1,6 @@
 "use client"
 
+import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { IconContext } from "react-icons"
 import { FaEye, FaEyeSlash, FaRegTimesCircle } from "react-icons/fa"
@@ -14,19 +15,14 @@ interface toggleFunction {
 const LoginModal = ({ toggleModal }: toggleFunction) => {
 
   const [inputMail, setInputMail] = useState<string>("")
-  const [inputPassword, setInputPassword] = useState<string>("")
   const [toggleLogin, setToggleLogin] = useState<boolean>(false)
-  const [togglePassword, setTogglePassword] = useState<boolean>(false)
 
   return (
 
     <div className='absolute top-0 left-0 z-20 flex justify-center items-center w-full h-full bg-modalBackground'>
         <div className='relative w-[37rem] h-[32rem] bg-grayLightSoft'>
             <div className='mt-6 flex justify-center' >
-                <button 
-                  className= "w-32 h-7 text-xs text-black border-b border-b-darkBackground" 
-                  onClick={() => setToggleLogin(false) }
-                > Log in </button>
+                
 
                 <button 
                   className='w-32 h-7 text-xs text-black border-b border-b-grayLight' 
@@ -41,13 +37,13 @@ const LoginModal = ({ toggleModal }: toggleFunction) => {
             </div>
             
             <h2 className="mt-4 text-lg font-semibold text-text text-center">  
-              { toggleLogin ? "Sign in": "Log in"  }
+              { "Sign in" }
             </h2>
             <p className="mb-5 text-[0.75rem] font-light text-text text-center"> 
               { toggleLogin ?  "Create an account to receive discounts and offers " : "Discover new and trendy products" } 
             </p>
 
-            <form className="mx-[6%]" >
+            <form className="mx-[6%] flex flex-col justify-center" >
               <label className="text-xs font-medium text-text"> Email* </label> <br/>
               <input 
                 className="mb-4 pl-4 w-[33.4rem] h-9 border border-grayLight bg-white rounded-md placeholder:text-sm placeholder:text-gray-400" 
@@ -57,23 +53,10 @@ const LoginModal = ({ toggleModal }: toggleFunction) => {
                 onChange={(e) => setInputMail(e.target.value)}
               />
 
-              <label className="text-xs font-medium text-text"> Password* </label> <br/>
-              <input 
-                className="mb-6 pl-4 w-[33.4rem] h-9 border border-grayLight bg-white rounded-md placeholder:text-sm placeholder:text-gray-400" 
-                type="email" 
-                placeholder="Your password must contain at least 8 characters" 
-                value={ inputPassword }
-                onChange={(e) => setInputPassword(e.target.value)}
-              />
-            
-              <div onClick={() => setTogglePassword(!togglePassword) } >
-                <IconContext.Provider value={{ className:"absolute top-[48%] right-[7%] w-4 h-4 cursor-pointer"}}>
-                  { togglePassword ? <FaEye/> : <FaEyeSlash/> }
-                </IconContext.Provider>
-              </div>
               
-              <button className="w-[33.4rem] h-10 bg-darkBackground text-sm font-medium text-white rounded-md"> 
-                { toggleLogin ? "Sign in" : "Log in" }   
+              {/* Disabled  */}
+              <button disabled={true} onClick={()=>{signIn('email', {inputMail})}} className="w-[33.4rem] h-10 bg-darkBackground text-sm font-medium text-white rounded-md"> 
+                { toggleLogin ? "Sign in" : "Sign In" }   
               </button>
             </form>
 
@@ -81,9 +64,9 @@ const LoginModal = ({ toggleModal }: toggleFunction) => {
               <p className="font-medium text-text" > or </p>
             </div>
 
-            <button className="flex justify-center items-center mx-[6%] w-[33.4rem] h-10 text-sm text-text bg-white border border-grayLight rounded-md ">
+            <button onClick={()=>{signIn('google')}} className="flex justify-center items-center mx-[6%] w-[33.4rem] h-10 text-sm text-text bg-white border border-grayLight rounded-md ">
               <p className="mr-3 text-sm font-medium text-text"> 
-                { toggleLogin ? "Register with" : "Log in with" } 
+                { toggleLogin ? "Register with" : "Sign In with" } 
               </p>
               <IconContext.Provider value={{ className:"w-4 h-4" }} >
                 <FcGoogle/>
