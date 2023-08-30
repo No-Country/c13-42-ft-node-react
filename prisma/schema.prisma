@@ -53,17 +53,20 @@ model User {
   order         Order[]
   sessions      Session[]
   wishlistId    Wishlist?
+  reviews    Review[]
+
 }
 
 model Review {
-  id        Int      @id
-  user      String
+  id        Int      @id @default(autoincrement())
+  userId      String 
   title     String
-  text      String
-  date      DateTime
-  productID String   @unique
+  content      String
+  date      DateTime @default(now())
+  productId String   
   score     Int
-  product   Product  @relation(fields: [productID], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Wishlist {
@@ -126,7 +129,7 @@ model Product {
   product_type  String
   sub_title     String
   images        String[]
-  review        Review?
+  reviews        Review[]
   carts         Cart[]     @relation("CartToProduct")
   orders        Order[]    @relation("OrderToProduct")
   wishlists     Wishlist[] @relation("ProductToWishlist")

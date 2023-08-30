@@ -9,7 +9,10 @@ export const getProducts = async()=>{
 
 export const getProductsByID = async(id: string)=>{
     const products:Product|null =  await prisma.product.findUnique({
-        where:{id : id}
+        where:{id : id},
+        include: {
+            reviews: true,
+        }
     })
     return products
 }
