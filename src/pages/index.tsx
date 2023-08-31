@@ -2,13 +2,10 @@ import { Product } from "@prisma/client";
 import HeroSlider from "~/components/heroSlider";
 import Newsletter from "~/components/newsletter";
 import ProductCard from "~/components/productCard";
-<<<<<<< HEAD
 import ShareYourOutfit from "~/components/shareYourOutfit";
 
-=======
 import { getProducts } from "~/utils/services/products";
 import Navbar from "~/components/navbar";
->>>>>>> 4ae1c2bb30954cee91419cf77131f4781809f849
 export interface Clothing {
   id: number,
   brand: string,

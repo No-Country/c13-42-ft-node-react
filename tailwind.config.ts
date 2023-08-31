@@ -20,14 +20,11 @@ export default {
       blackZinc: "#27272a",
       white: "#ffffff",
       modalBackground: "rgba(0, 0, 0, 0.8)",
-<<<<<<< HEAD
-      warning: "#ef4444"
-=======
+      warning: "#ef4444",
       whiteLight: "rgb(241 245 249)",
       black: "#000",
       favoriteGold: "#dd9933",
       loadingImg: "#f5f5f5",
->>>>>>> 4ae1c2bb30954cee91419cf77131f4781809f849
     },
   },
   plugins: [],
