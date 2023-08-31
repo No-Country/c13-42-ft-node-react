@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { User } from 'next-auth'
+import Link from 'next/link'
+import { type User } from 'next-auth'
 import {  useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { IconContext } from 'react-icons'
@@ -198,9 +199,12 @@ const [id, setId] = useState<string>('')
                     </button>
                 </div>
 
-                <button className='w-full h-11 bg-white text-sm text-text border-t border-t-grayLight shadow-inner ' >
+                <Link href="/cart">
+                  <button className='w-full h-11 bg-white text-sm text-text border-t border-t-grayLight shadow-inner ' >
                     { `See all items( ${cart} )` }
-                </button>
+                  </button>
+                </Link>    
+                
                 </>
             )
         }
