@@ -8,9 +8,6 @@ import { updateOrder } from '~/utils/services/orders'
 
 export default function Success({order}:{order: Order }) {
     
-   
-    // URL -> `/dashboard?search=my-project`
-    // `search` -> 'my-project'
     return <>total:  {order.total}</>
 }
 

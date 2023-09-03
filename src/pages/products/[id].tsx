@@ -7,9 +7,9 @@ import { IconContext } from "react-icons"
 import { FaTruck } from "react-icons/fa"
 import { HiOutlineReceiptRefund } from "react-icons/hi"
 import Navbar from "~/components/navbar"
-import { getProductsByID, getProducts } from "~/utils/services/products"
+import { getProductsByID, getProducts, updateViews } from "~/utils/services/products"
 
-const ProductDetail = ({product, products}: {product: Product|null}) => {
+const ProductDetail = ({product, products}: {product: Product|null, products: Product[]}) => {
 
   return (
     <>
@@ -60,13 +60,15 @@ export default ProductDetail
 
 
 export async function getServerSideProps({query}: GetServerSidePropsContext) {
-  const id = query.id
+  const id: string|any = query.id
   console.log(id);
 
   // Fetch data from external API
   try {
     const products: Product[]  = await getProducts()
-    const product: Product|null  = await getProductsByID(id)
+    const product: Product|null  = await updateViews(id)
+    console.log(product);
+    
     if (product) {
       return { props: { product, products: products } }
     }else{
