@@ -1,15 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"
 
-import { Product } from "@prisma/client"
-import { GetServerSidePropsContext } from "next"
+import { type Product } from "@prisma/client"
+import { type GetServerSidePropsContext } from "next"
 import { IconContext } from "react-icons"
 import { FaTruck } from "react-icons/fa"
 import { HiOutlineReceiptRefund } from "react-icons/hi"
 import Navbar from "~/components/navbar"
+import { useCartContext } from "~/hooks/useCartContext"
 import { getProductsByID, getProducts, updateViews } from "~/utils/services/products"
 
 const ProductDetail = ({product, products}: {product: Product|null, products: Product[]}) => {
+
+  const { fullCart, setFullCart } = useCartContext()
+  
 
   return (
     <>
@@ -41,7 +45,10 @@ const ProductDetail = ({product, products}: {product: Product|null, products: Pr
           <p className=" text-text"> Free returns and refund </p>
         </div>
 
-        <button className="mt-10  w-56 h-14 bg-darkBackground text-white rounded-md cursor-pointer"> 
+        <button 
+          className="mt-10  w-56 h-12 bg-darkBackground text-white rounded-md cursor-pointer"
+          
+        > 
           Add to cart 
         </button>
 
