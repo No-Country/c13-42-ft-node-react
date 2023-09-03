@@ -7,28 +7,22 @@ import LoginModal from "../loginModal"
 import Link from "next/link"
 import { AiOutlineMenu } from "react-icons/ai"
 import SearchProducts from "../searchProducts"
-import { Product } from "@prisma/client"
+import { type Product } from "@prisma/client"
 import { signOut, useSession } from "next-auth/react"
 import CartModal from "../cartModal"
+import { useCartContext } from "~/hooks/useCartContext"
 
 export const SearchContext = createContext();
 
 const Navbar = ( { products }: { products: Product[] } ) => {
 
-
+  const { fullCart } = useCartContext()
   const { data: session, status } = useSession()
-
-
-  const [cartCount, setCartCount] = useState<number>(0)
-
-
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [menu, setMenu] = useState<boolean>(false)
   const [searchModal, setSearchModal] = useState<boolean>(false)
   const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false)
-
-
 
   const categories: string[]= ["All", "American Football", "Baseball", "Basketball", "Football", "Footwear", "Lifestyle", "Running", "Soccer"] 
 
@@ -103,10 +97,10 @@ const Navbar = ( { products }: { products: Product[] } ) => {
         }
 
           <div className="relative" onClick={() => setIsCartModalOpen(true)}>
-            <IconContext.Provider value={{ className:"h-5 w-5 text-text"}} >
+            <IconContext.Provider value={{ className:"h-5 w-5 text-text cursor-pointer"}} >
             <FaShoppingCart />
               <div className="absolute bottom-2 left-3 flex justify-center items-center w-5 h-5 rounded-full  text-xs font-normal text-white bg-accent"> 
-                { Number(cartCount) } 
+                { fullCart.length } 
               </div>
             </IconContext.Provider>
           </div>

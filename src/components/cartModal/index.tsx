@@ -116,10 +116,8 @@ const [id, setId] = useState<string>('')
   }
   
 
-
   return (
     <div className='absolute top-[20%] right-[12%] z-30 w-[24rem] h-auto bg-white border border-grayLight shadow-xl'>
-
         <div onClick={ toggleCartModal } >
             <IconContext.Provider value={{ className: "absolute top-[2.5%] right-[4.5%] w-4 h-4 cursor-pointer" }}>
                 <FaRegTimesCircle/>
@@ -128,12 +126,11 @@ const [id, setId] = useState<string>('')
         
         {
             !fullCart || fullCart.length == 0  ? (
-               
                   <p className='my-4 text-sm text-center'> Your cart is empty </p>  
+
             ) : (
                 
                 <>
-
                 <div className='mx-[4%]'>
                     <p className='mt-2 text-sm font-semibold' > {`Cart ( ${ fullCart.length } ) `} </p>
 
@@ -175,9 +172,7 @@ const [id, setId] = useState<string>('')
                         </div>
                         ))
                         .slice(0,1)  
-
                       }
-
                         <p className='text-sm font-semibold text-text'> PRICE </p> 
                     </div>
 
@@ -214,12 +209,10 @@ const [id, setId] = useState<string>('')
                   <button className='w-full h-11 bg-white text-sm text-text border-t border-t-grayLight shadow-inner ' >
                       { `See all items( ${fullCart.length} )` }
                     </button>
-                </Link> 
-              
+                </Link>               
                 </>
             )
         }
-       
     </div>
     
   )

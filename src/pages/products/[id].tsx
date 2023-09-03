@@ -3,6 +3,7 @@
 
 import { type Product } from "@prisma/client"
 import { type GetServerSidePropsContext } from "next"
+import { useEffect } from "react"
 import { IconContext } from "react-icons"
 import { FaTruck } from "react-icons/fa"
 import { HiOutlineReceiptRefund } from "react-icons/hi"
@@ -12,9 +13,14 @@ import { getProductsByID, getProducts, updateViews } from "~/utils/services/prod
 
 const ProductDetail = ({product, products}: {product: Product|null, products: Product[]}) => {
 
-  const { fullCart, setFullCart } = useCartContext()
-  
+  const { fullCart, setFullCart } = useCartContext()  
 
+  useEffect(() => {
+    console.log( fullCart );
+    
+  }, [fullCart])
+  
+  
   return (
     <>
     <Navbar products={products}/>
@@ -47,7 +53,20 @@ const ProductDetail = ({product, products}: {product: Product|null, products: Pr
 
         <button 
           className="mt-10  w-56 h-12 bg-darkBackground text-white rounded-md cursor-pointer"
-          
+          onClick={ () => 
+            setFullCart(
+               {
+                  id: product?.id,
+                  name: product?.name,
+                  category: product?.category,
+                  price: product?.price,
+                  brand: product?.brand,
+                  gender: product?.gender,
+                  images: product?.images,
+                  sub_title: product?.sub_title
+                }
+            )
+          }
         > 
           Add to cart 
         </button>
