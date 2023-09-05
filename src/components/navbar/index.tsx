@@ -11,7 +11,9 @@ import { Product } from "@prisma/client"
 import { signOut, useSession } from "next-auth/react"
 import CartModal from "../cartModal"
 
-export const SearchContext = createContext('');
+const [searchModal, setSearchModal] = useState<boolean>(false)
+
+export const SearchContext = createContext({setSearchModal});
 
 const Navbar = ( { products }: { products: Product[] } ) => {
 
@@ -25,7 +27,6 @@ const Navbar = ( { products }: { products: Product[] } ) => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [menu, setMenu] = useState<boolean>(false)
-  const [searchModal, setSearchModal] = useState<boolean>(false)
   const [isCartModalOpen, setIsCartModalOpen] = useState<boolean>(false)
 
 
