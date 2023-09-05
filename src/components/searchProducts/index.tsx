@@ -12,7 +12,7 @@ export default function SearchProducts ( { products }: { products: Product[] } )
   const [maxResultsToShow, setMaxResultsToShow] = useState(10);
   const { setSearchModal } = useContext(SearchContext)
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: any) => {
     const searchTerm = event.target.value;
     setSearchTerm(searchTerm);
     if(searchTerm==="" || searchTerm===" ") {
@@ -23,7 +23,7 @@ export default function SearchProducts ( { products }: { products: Product[] } )
     const filteredProducts = products.filter((product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    const limitedResults = filteredProducts.slice(0, Math.min(maxResultsToShow, filteredProducts.length));
+    const limitedResults: any = filteredProducts.slice(0, Math.min(maxResultsToShow, filteredProducts.length));
     setSearchResults(limitedResults);
   }
 
@@ -45,7 +45,7 @@ export default function SearchProducts ( { products }: { products: Product[] } )
         />
         {isInputSelected && 
         <ul className="absolute bg-white shadow-[0px_0px_4px_0px_black] w-full rounded-[.1rem] border-none">
-          {searchResults.map((product) =>(
+          {searchResults.map((product: Product) =>(
           <li className="p-[.5rem] cursor-pointer truncate hover:bg-whiteLight" key={product.id} onMouseDown={ ()=>{
             setSearchModal(false)
             router.push(`/products/${product.id}`).catch((error) => {

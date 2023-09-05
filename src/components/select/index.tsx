@@ -2,9 +2,9 @@ import { ProductContext } from '../../pages/[category]/index'
 import { useContext } from 'react'
 
 export default function SelectOptions() {
-const { setSelectOptions } = useContext(ProductContext)
+const { setSelectOptions }: any = useContext(ProductContext)
 
-  function changed(event) {
+  function changed(event: any) {
     setSelectOptions(event.target.value)    
   }
   return(

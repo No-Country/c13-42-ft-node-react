@@ -13,12 +13,12 @@ export default function Success({order}:{order: Order }) {
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const preference_id = context.query.preference_id  
+  const preference_id: any = context.query.preference_id  
   try {
       if (preference_id) {
         const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
 
-        const order = await updateOrder({status: 'SUCCESS', id: preference_id})
+        const order: any = await updateOrder({status: 'SUCCESS', id: preference_id})
         order.date = order.date.toLocaleDateString(undefined, options)
         return { props: { order } }
 

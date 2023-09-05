@@ -4,10 +4,14 @@ import ProductCard from "~/components/productCard";
 import SelectOptions from "~/components/select";
 import { createContext, useState } from "react";
 import Navbar from "~/components/navbar";
+import { GetServerSidePropsContext } from "next";
 
-export const ProductContext = createContext();
 
-export default function Category( {products, category}: { products : Product[] } ) {
+const [selectOptions, setSelectOptions] = useState<string>('')
+
+export const ProductContext = createContext({ selectOptions, setSelectOptions });
+
+export default function Category( {products, category}: { products : Product[], category: any } ) {
   const [selectOptions, setSelectOptions] = useState<string>('')
   const methodSelectOptions = (products:Product[]) => {
     switch(selectOptions) {
@@ -47,9 +51,9 @@ export default function Category( {products, category}: { products : Product[] }
   );
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Fetch data from external API
-  const category = context.params.category;
+  const category = context?.params?.category;
 
   try {
     const products: Product[]  = await getProducts()
