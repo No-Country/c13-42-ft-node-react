@@ -43,9 +43,8 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
   const [questionInput, setQuestionInput] = useState<string>("")
   const [questionArray, setQuestionArray] = useState<Array<any>>(product.questions)
   const [reviewArray, setReviewArray] = useState<Array<Review>>(product.reviews)
-  console.log((product.wishlists).some(user => user.userID === session?.user.id));
   
-  const [wishlist, setWishlist] = useState<boolean>(session?.user.id && (product.wishlists).some(user => user.userID === session?.user.id) ? true: false  )
+  const [wishlist, setWishlist] = useState<boolean>(session?.user.id && (product.wishlists).some((user: any) => user.userID === session?.user.id) ? true: false  )
 
   const [isShippingModalOpen, setIsShippingModalOpen] = useState(false)
   const [isReturnsModalOpen, setIsReturnsModalOpen] = useState(false)
