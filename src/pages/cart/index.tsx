@@ -3,35 +3,60 @@
 "use client"
 import ProductCounter from '~/components/productCounter'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IconContext } from 'react-icons'
 import { FaLongArrowAltLeft,  FaTrash } from "react-icons/fa"
+import Navbar from '~/components/navbar'
+import { BsArrow90DegLeft, BsArrowLeft } from 'react-icons/bs'
 
 
 
 const Cart = () => {
+  const [items, setItems] = useState([1]);
 
+  useEffect(() => {
+    const local = localStorage.getItem('cart') 
+    const items = local ?  JSON.parse(local) : []
+    if (items) {
+     setItems(items);
+    }
+  }, []);
+
+
+  useEffect(() => {
+  localStorage.setItem('cart', JSON.stringify(items));
+  }, [items]);
   const [cartCount, setCartCount] = useState<number>(1)
 
   return (
 
-    <div className='mx-[5%] mb-12'>
+    <>
+      
+      <div className='mx-[5%] mb-12'>
+      <span className=' flex items-center'>
+      <Link className='mt-11 mb-6 mr-3 text-xl font-semibold text-text hover:underline' href={'/'}> <BsArrowLeft/></Link>
       <h2 className='mt-11 mb-6 text-xl font-semibold text-text' > Cart Shopping </h2>
+      </span>
 
       
       <div className='flex w-full'>
         <div className='mr-14 w-[66%]'>
             <div className='flex justify-between mb-5 py-3 w-full h-auto border-b border-b-grayLight '>
-                <p className='font-semibold' > Items (2) </p>
+                <p className='font-semibold' > Items {items.length} </p>
                 <button className='text-sm font-medium text-warning' > Remove all </button>
             </div>
 
             { /*Product Detail */ }
-            <div className='flex justify-between pb-6 border-b border-b-grayLight ' >
+            {
+              items.map(()=>{
+                return (
+                  <div className='flex justify-between items-center pb-6 border-b border-b-grayLight ' >
+                    
+                    <img src='/assets/hero_sport_4.jpg' alt='product' className='w-1/5 h-36 object-contain'/>
                 <div className='flex gap-6' >  
-                    <img src='/assets/clothing_2.jpg' alt='product' className='w-28 h-36 object-cover'/>
-                    <div className='flex-col' >
-                        <p className='mb-1 text-lg font-semibold text-text' > Black Carbon </p>
+                    
+                    <div className='flex-col w-full' >
+                        <p className='mb-1 text-xl font-semibold text-text' > Black Carbon </p>
                         <p className='text-sm font-medium text-grayDark' > Man | Sneaker </p>
                         <p className='mb-2 text-sm font-medium text-grayDark' > { `Size 5.5` } </p>
                         <div className='flex items-center gap-3' >
@@ -49,6 +74,9 @@ const Cart = () => {
               />
               <p className='text-lg font-semibold text-text' > { `$24.25` } </p>
             </div>
+                )
+              })
+            }
 
             { /*Continue Shopping */ }
               <Link href="/" className='flex items-center mt-4 gap-3' >  
@@ -109,6 +137,7 @@ const Cart = () => {
 
           
     </div>
+    </>
   )
 }
 
