@@ -96,6 +96,9 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
       width: "w-[2rem]"
     }
   ]
+import { getProductsByID, getProducts, updateViews } from "~/utils/services/products"
+
+const ProductDetail = ({product, products}: {product: Product|null, products: Product[]}) => {
 
   return (
     <>
@@ -336,16 +339,17 @@ export default ProductDetail
 
 
 export async function getServerSideProps({query}: GetServerSidePropsContext) {
-  const id: any = query.id
+
+  const id: string|any = query.id
   console.log(id);
 
   // Fetch data from external API
   try {
     const products: Product[]  = await getProducts()
-    const product: Product|null  = await getProductsByID(id)
-    console.log('====================================');
+
+    const product: Product|null  = await updateViews(id)
     console.log(product);
-    console.log('====================================');
+    
     if (product) {
       return { props: { product, products: products } }
     }else{

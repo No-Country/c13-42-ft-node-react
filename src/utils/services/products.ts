@@ -1,6 +1,7 @@
 import { Product } from "@prisma/client"
 import { prisma } from "~/server/db"
 import { CreateProductType, updateProductType } from "~/validations"
+import { formatDatesArray } from "../dates"
 
 export const getProducts = async()=>{
     const products:Product[] =  await prisma.product.findMany({})
@@ -28,6 +29,47 @@ export const getProductsByID = async(id: string)=>{
     })
     return products
 }
+
+export const updateViews = async(id: string)=>{
+    let product:any|null =  await prisma.product.update({
+        where:{id : id},
+        data: {
+            views:{
+                increment: 1
+            }
+        },
+        include: {
+            reviews: true,
+            orders: {
+                select:{
+                    userID: true
+                }
+            },
+            questions: {
+                
+                include:{
+                    answer: {
+                        select: {
+                            content: true
+                        }
+                    },
+                    user: {
+                        select:{
+                            email: true,
+                            id: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+    product.questions = formatDatesArray(product.questions)
+    product.reviews = formatDatesArray(product.reviews)
+    console.log(product);
+    
+    return product
+}
+
 
 export const deleteProductsByID = async(id: string)=>{
     const products:Product|null =  await prisma.product.delete({

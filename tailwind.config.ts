@@ -21,6 +21,7 @@ export default {
       blackZinc: "#27272a",
       white: "#ffffff",
       modalBackground: "rgba(0, 0, 0, 0.8)",
+      warning: "#ef4444",
       whiteLight: "rgb(241 245 249)",
       black: "#000",
       favoriteGold: "#dd9933",
