@@ -9,3 +9,12 @@ export const formatDatesArray = (arr: []) =>{
     return formated
     
 }
+export const formatDate = (date: any) =>{
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
+
+    const formated = date.toLocaleDateString(undefined, options)
+        
+
+    return formated
+    
+}

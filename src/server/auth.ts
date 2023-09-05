@@ -19,6 +19,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
+      is_admin: boolean
       // ...other properties
       // role: UserRole;
     };
@@ -37,17 +38,32 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
-  },
+    async session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
+        const dbUser = await prisma.user.findFirst({
+          where: {
+            id: user.id,
+          }
+        })
+        if (dbUser) {
+          console.log('====================================');
+          console.log(dbUser);
+          console.log('====================================');
+          session.user.is_admin = dbUser.is_admin;
+          session.user.id = dbUser.id
+        }
+        session.user.id = user.id
+
+        return session
+        // session.user.role = user.role; <-- put other properties on the session here
+      }
+      return session;
+  }},
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
+      
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET
     }),

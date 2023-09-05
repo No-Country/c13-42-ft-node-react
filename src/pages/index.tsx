@@ -1,4 +1,4 @@
-import { Product } from "@prisma/client";
+import { type Product } from "@prisma/client";
 import HeroSlider from "~/components/heroSlider";
 import Newsletter from "~/components/newsletter";
 import ProductCard from "~/components/productCard";

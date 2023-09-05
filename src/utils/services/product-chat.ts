@@ -33,6 +33,14 @@ export const createQuestion = async(body: createQuestionType)=>{
             userId: body.userId,
             productId: body.productId,
             content: body.content,
+        },
+        include: {
+            user:{
+                select:{
+                    email:true,
+                    id: true
+                }
+            }
         }
 
     })

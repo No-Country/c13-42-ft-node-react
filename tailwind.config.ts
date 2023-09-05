@@ -10,6 +10,7 @@ export default {
       accent: "#06b6d4",
       accentTeal: "#14b8a6",
       accent2: "#E3E8D8",
+      accent3: "#9333ea",
       text: "#211E1E",
       darkBackground: "#18181b",
       grayLight: "#d1d5db",
