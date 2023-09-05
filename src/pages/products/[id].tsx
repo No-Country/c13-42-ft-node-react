@@ -56,7 +56,7 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
 
 
   useEffect(() => {
-    setWishlist(session?.user.id && (product.wishlists).some(user => user.userID === session?.user.id) ? true: false)
+    setWishlist(session?.user.id && (product.wishlists).some((user: any) => user.userID === session?.user.id) ? true: false)
   
   }, [session])
   
