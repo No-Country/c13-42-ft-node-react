@@ -21,12 +21,16 @@ import PaymentModal from "~/components/paymentModal"
 import ReturnsModal from "~/components/returnsModal"
 import WriteReviewModal from "~/components/writeReviewModal"
 import SponsoredProductCard from "~/components/sponsoredProductCard"
+import { postQuestion } from "~/utils/requests/question"
+import { useSession } from "next-auth/react"
 
 
-const ProductDetail = ({product, products}: {product: Product|null}) => {
+const ProductDetail = ({product, products}: {product: Product|any, products: any}) => {
+
+  const { data: session, status } = useSession()
 
   const [questionInput, setQuestionInput] = useState<string>("")
-  const [questionArray, setQuestionArray] = useState<number>(1)
+  const [questionArray, setQuestionArray] = useState<Array<any>>(product.questions)
   const [reviewArray, setReviewArray] = useState<number>(1)
   const [wishlist, setWishlist] = useState<boolean>(false)
 
@@ -34,6 +38,23 @@ const ProductDetail = ({product, products}: {product: Product|null}) => {
   const [isReturnsModalOpen, setIsReturnsModalOpen] = useState(false)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+
+
+  const handleCreateQuestion =async()=>{
+    try {
+      if(session?.user.id){
+        const question  = await postQuestion(product.id, questionInput, session.user.id)
+        if (question) {
+          setQuestionArray([...questionArray, question])
+        }
+      }
+  
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
 
   const closeShippingModal = () => {
     setIsShippingModalOpen(false)
@@ -117,7 +138,10 @@ const ProductDetail = ({product, products}: {product: Product|null}) => {
 
           {/* Ask to seller section */  }
           <div className="mt-8 mb-6 w-[84%] border border-grayLight" />
-            <h3 className="mb-2 text-xl font-medium text-text"> Ask to seller  </h3>
+            {
+              session?.user.id ? 
+              <>
+                <h3 className="mb-2 text-xl font-medium text-text"> Ask to seller  </h3>
             <div className="flex gap-5"  >
               <input 
                 className="pl-4 w-[22rem] h-9 border border-gray placeholder:text-sm placeholder:text-gray" 
@@ -125,13 +149,17 @@ const ProductDetail = ({product, products}: {product: Product|null}) => {
                 value={ questionInput}
                 onChange={ e => setQuestionInput(e.target.value) }
               />
-              <button 
+              <button onClick={handleCreateQuestion}
                 className="mb-6  w-[5rem] h-9 bg-darkBackground text-white" 
               > Ask </button>
             </div>
+              </>
+              :
+              null
+            }
 
             {
-              questionArray == 0 ? (
+              questionArray.length == 0 ? (
                 <p> No questions founded </p> 
               ) : (
                 <div className="mb-4" >
@@ -308,13 +336,16 @@ export default ProductDetail
 
 
 export async function getServerSideProps({query}: GetServerSidePropsContext) {
-  const id = query.id
+  const id: any = query.id
   console.log(id);
 
   // Fetch data from external API
   try {
     const products: Product[]  = await getProducts()
     const product: Product|null  = await getProductsByID(id)
+    console.log('====================================');
+    console.log(product);
+    console.log('====================================');
     if (product) {
       return { props: { product, products: products } }
     }else{
