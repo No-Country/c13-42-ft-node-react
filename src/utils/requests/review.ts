@@ -1,5 +1,5 @@
-export const postQuestion = async (productId: string, content: string, userId: string ) => {
-    const response = await fetch(`http://localhost:3000/api/v0/questions`, {
+export const postReview = async (productId: string, content: string, userId: string, score: number, title: string ) => {
+    const response = await fetch(`http://localhost:3000/api/v0/reviews`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',
@@ -9,11 +9,10 @@ export const postQuestion = async (productId: string, content: string, userId: s
         },
         redirect: 'follow', 
         referrerPolicy: 'no-referrer',
-        body: JSON.stringify({productId, content, userId}) 
+        body: JSON.stringify({productId, content, userId, score, title}) 
       });
       const data = response.json()
-      return data 
-      
+      return data
 }
 
 

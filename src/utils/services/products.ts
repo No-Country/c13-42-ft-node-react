@@ -12,7 +12,15 @@ export const getProductsByID = async(id: string)=>{
     const products:Product|null =  await prisma.product.findUnique({
         where:{id : id},
         include: {
-            reviews: true,
+            reviews: {
+                include: {
+                    user: {
+                        select: {
+                            email: true
+                        }
+                    }
+                }
+            },
             orders: {
                 select:{
                     userID: true
@@ -39,7 +47,18 @@ export const updateViews = async(id: string)=>{
             }
         },
         include: {
-            reviews: true,
+            reviews: {
+                orderBy:{date: 'desc'},
+                include: {
+                    user: {
+                        select: {
+                            email: true,
+                            id: true,
+                            image: true
+                        }
+                    }
+                }
+            },
             orders: {
                 select:{
                     userID: true
@@ -60,6 +79,9 @@ export const updateViews = async(id: string)=>{
                         }
                     }
                 }
+            },
+            wishlists:{
+                select: {userID: true}
             }
         }
     })

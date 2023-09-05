@@ -24,6 +24,15 @@ export const createReview = async(body: createReviewType)=>{
             content: body.content,
             score: body.score,
             title: body.title
+        },
+        include: {
+            user: {
+                select:{
+                    email: true,
+                    id: true,
+                    image: true
+                }
+            }
         }
 
     })

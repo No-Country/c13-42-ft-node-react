@@ -7,15 +7,15 @@ interface bars {
   width: string
 }
 
-import { type Product } from "@prisma/client"
+import { Review, type Product } from "@prisma/client"
 import { type GetServerSidePropsContext } from "next"
 import { IconContext } from "react-icons"
 import { FaHeart, FaRegHeart } from "react-icons/fa"
 import Navbar from "~/components/navbar"
-import { getProductsByID, getProducts, updateViews } from "~/utils/services/products"
-import { useState } from "react"
+import {  getProducts, updateViews } from "~/utils/services/products"
+import { useEffect, useState } from "react"
 import { IoReturnDownForwardSharp } from "react-icons/io5"
-import { ImStarFull, ImStarHalf } from "react-icons/im"
+import { ImStarEmpty, ImStarFull, ImStarHalf } from "react-icons/im"
 import ShippingModal from "~/components/shippingModal"
 import PaymentModal from "~/components/paymentModal"
 import ReturnsModal from "~/components/returnsModal"
@@ -23,8 +23,10 @@ import WriteReviewModal from "~/components/writeReviewModal"
 import SponsoredProductCard from "~/components/sponsoredProductCard"
 import { postQuestion } from "~/utils/requests/question"
 import { useSession } from "next-auth/react"
-import { split } from "postcss/lib/list"
 import { postAnswer } from "~/utils/requests/answers"
+import { postReview } from "~/utils/requests/review"
+import Footer from "~/components/footer"
+import { addToWishlist, removeFromWishlist } from "~/utils/requests/wishlist"
 
 
 const ProductDetail = ({product, products}: {product: Product|any, products: any}) => {
@@ -40,25 +42,91 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
 
   const [questionInput, setQuestionInput] = useState<string>("")
   const [questionArray, setQuestionArray] = useState<Array<any>>(product.questions)
-  const [reviewArray, setReviewArray] = useState<number>(1)
-  const [wishlist, setWishlist] = useState<boolean>(false)
+  const [reviewArray, setReviewArray] = useState<Array<Review>>(product.reviews)
+  console.log((product.wishlists).some(user => user.userID === session?.user.id));
+  
+  const [wishlist, setWishlist] = useState<boolean>(session?.user.id && (product.wishlists).some(user => user.userID === session?.user.id) ? true: false  )
 
   const [isShippingModalOpen, setIsShippingModalOpen] = useState(false)
   const [isReturnsModalOpen, setIsReturnsModalOpen] = useState(false)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
 
+  
+  const averageScore = reviewArray.length > 0 ? Math.round( ((reviewArray.reduce((accumulator, currentValue) => accumulator + currentValue?.score, 0))/reviewArray.length)) : 0
+
+
+  useEffect(() => {
+    setWishlist(session?.user.id && (product.wishlists).some(user => user.userID === session?.user.id) ? true: false)
+  
+  }, [session])
+  
 
   const handleCreateQuestion =async()=>{
     try {
       if(session?.user.id){
         const question  = await postQuestion(product.id, questionInput, session.user.id)
+        console.log(question);
         
         if (question) {
           console.log(question);
           setQuestionInput('')
           setQuestionArray([question, ...questionArray])
           setAnswer([{...question, answer: {content: ''}}, ...answers])
+        }
+      }
+  
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  const handleWishlist =async()=>{
+    try {
+      if(session?.user.id && !wishlist){
+        setWishlist(true)
+        const wishlist  = await addToWishlist(product.id, session.user.id)
+        console.log(wishlist);
+        
+        if (wishlist) {
+          console.log(wishlist);
+          
+        }else {
+          setWishlist(false)
+
+        }
+
+      } else{
+        if (session?.user.id) {
+          setWishlist(false)
+          const wishlist  = await removeFromWishlist([{id: product.id}], session.user.id)
+          if (wishlist) {
+            console.log(wishlist);
+            
+          }else {
+            setWishlist(true)
+          }
+
+        }
+
+      }
+  
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+  const handleCreateReview =async(content: string, title: string, score: number)=>{
+    try {
+      if(session?.user.id){
+        const review  = await postReview(product.id, content, session.user.id, score, title)
+        console.log(review);
+        
+        if (review) {
+          console.log(review);
+          review.date = 'now'
+          setReviewArray([review, ...reviewArray])
+          closeReviewModal()
         }
       }
   
@@ -115,7 +183,7 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
     {
       id:"bar_1",
       barRanking: "excellent",
-      width: "w-[16rem]"
+      width: `w-[12rem]`
     },
     {
       id:"bar_2",
@@ -254,10 +322,13 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
           <div className="my-6 w-[84%] border border-grayLight"/>
 
           {/*Reviews Section */}
-          <div className="relative">
-            <h3 className="mb-2 text-xl font-medium text-text"> Reviews </h3>
-            <div className="flex gap-7">
-              <p className="text-5xl font-medium text-text"> 4.5 </p>
+          <div className="relative mb-10">
+            <h3 className=" text-xl font-medium text-text"> Reviews </h3>
+            <div className="flex gap-7 items-center">
+            {
+              reviewArray.length == 0 ? null : 
+              <>
+              <p className="text-5xl font-medium text-text"> { averageScore} </p>
               <div className="flex flex-col" > 
                 {
                   bars.map( bar => (
@@ -267,48 +338,55 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
                       </div>
                   ))
                 }
-              </div>
-            </div>
-
-            {
-              reviewArray == 0 ? (
-                <>
-                  <p className="mt-8 text-sm text-gray-500" > There are not reviews yet. Be the first to comment! </p>
-                  <div className="flex justify-center items-center mt-11 mb-14 ">
-                    <button 
-                      className="w-52 h-10 bg-black text-sm text-white" 
-                      onClick={() => setIsReviewModalOpen(true) }
-                    > Write a review </button> 
-                  </div> 
-                </>
-              ) : (
-                <>
-                  <div className="mt-11 flex items-start gap-4">
-                    <img src="/assets/kike_user.jpg" alt="user" className="w-10 h-10 object-cover rounded-full"/>
-                      <div className="w-[25.5rem]">
-                        <p className="-mt-1 mb-1 font-bold text-text"> Kike </p>
-                        <div className="flex gap-1">
-                          <IconContext.Provider value={{ className:"w-3 h-3 text-text" }}>
-                            <ImStarFull />
-                            <ImStarFull />
-                            <ImStarFull />
-                            <ImStarHalf />
-                          </IconContext.Provider>
-                        </div>
-                        <p className="mt-4 mb-1 text-xs text-gray"> one week ago </p>
-                        <p className="text-sm text-text leading-5 " > I´m very happy with my purchase. These shoes are super comfortable and easy to clean. Also very resistant. I skate two or three times a week and after this rough use, they have held up pretty well.  </p>
-                      </div>
-                    </div>
-
-                  <div className="flex justify-center items-center mt-11 mb-14 ">
+              </div></>}
+            
+              <div className="flex  items-center mt-11 mb-14 ">
                     <button 
                       className="w-52 h-10 bg-darkBackground text-sm text-white" 
                       onClick={() => setIsReviewModalOpen(true) }
                     > Write a review </button> 
                   </div> 
-                </>                                   
+            </div>
+
+            {
+              reviewArray.length == 0 ? (
+                <>
+                  <p className="mt-8 text-sm text-gray-500" > There are not reviews yet. Be the first to comment! </p>
+                  
+                </>
+              ) : (
+                reviewArray.slice(0,2).map((item: any)=>{
+                  return (
+                    <>
+                  <div className="mt-11 flex items-start gap-4">
+                    <img src={item.user.images ?  item.user.images  : 'https://icon-library.com/images/no-user-image-icon/no-user-image-icon-3.jpg'} alt="user" className="w-10 h-10 object-cover rounded-full"/>
+                      <div className="w-[25.5rem]">
+                        <p className="-mt-1 mb-1 font-bold text-text"> { item.user.id == session?.user.id ? 'You' :  item.user.email.split('@')[0] } </p>
+                        <div className="flex gap-1">
+                          <IconContext.Provider value={{ className:"w-3 h-3 text-text" }}>
+
+                          {[...Array(item.score)].map((x, i) =>
+                            <ImStarFull key={i}/>
+                          )}
+                          {[...Array(5 - item.score)].map((x, i) =>
+                            <ImStarEmpty key={i}/>
+                          )}
+                            
+                          </IconContext.Provider>
+                        </div>
+                        <p className="mt-4 mb-1 text-xs text-gray"> {item.date} </p>
+                        <p className="text-sm text-text leading-5 " > {item.content}  </p>
+                      </div>
+                    </div>
+
+                  
+                </> 
+                  )
+                })                                  
               )
+
             }
+            
           </div>
         </div>
       </div>
@@ -321,11 +399,12 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
         <p className="my-1 text-sm font-medium text-text" > {product?.sub_title} </p>
         <div className="flex gap-1 mb-3">
             <IconContext.Provider value={{ className:"w-4 h-4 text-text" }}>
-                <ImStarFull />
-                <ImStarFull />
-                <ImStarFull />
-                <ImStarFull />
-                <ImStarHalf />
+            {[...Array(averageScore)].map((x, i) =>
+                            <ImStarFull key={i}/>
+                          )}
+                          {[...Array(5 - averageScore)].map((x, i) =>
+                            <ImStarEmpty key={i}/>
+                          )}
             </IconContext.Provider>
         </div>
 
@@ -336,8 +415,11 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
                 Add to cart 
             </button>
             <button 
+                disabled={status === 'authenticated' ? false : true}
                 className={`flex justify-center items-center w-12 h-12 text-xl text-text border border-darkBackground cursor-pointer`} 
-                onClick={() => setWishlist(!wishlist) }
+                onClick={() => 
+
+                  handleWishlist() }
             >
                 { wishlist ? <FaHeart /> : <FaRegHeart/> }
             </button>
@@ -400,11 +482,13 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
         isReviewModalOpen && (
             <WriteReviewModal 
                 closeReviewModal={ closeReviewModal }
+                handleCreateReview= {handleCreateReview}
             />
         )
       }        
             
     </div>
+    <Footer/>
     </>
   )
 }
@@ -421,10 +505,11 @@ export async function getServerSideProps({query}: GetServerSidePropsContext) {
   try {
     const products: Product[]  = await getProducts()
 
-    const product: Product|null  = await updateViews(id)
-    console.log(product);
+    const product: Product|any  = await updateViews(id)
     
     if (product) {
+      
+
       return { props: { product, products: products } }
     }else{
       return {

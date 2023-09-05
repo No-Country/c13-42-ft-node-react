@@ -9,12 +9,11 @@ interface closeModal {
     closeReviewModal: () => void 
 }
 
-const WriteReviewModal = ({ closeReviewModal }: closeModal ) => {
+const WriteReviewModal = ({ closeReviewModal, handleCreateReview }: {handleCreateReview: any, closeReviewModal: any } ) => {
 
-  const [inputName, setInputName] = useState<string>("")
+  const [inputTitle, setinputTitle] = useState<string>(" ")
   const [review, setReview] = useState<string>("")
-
-  const [stars, setStars] = useState<number>(0)
+  const [stars, setStars] = useState<number>(5)
 
 
 
@@ -25,17 +24,17 @@ const WriteReviewModal = ({ closeReviewModal }: closeModal ) => {
         <div className='mb-5 w-full h-1 border-b border-b-gray'/>
         
         <form>
-            <label className='text-sm text-text' > Name* </label>
+            {/* <label className='text-sm text-text' > Title* </label>
             <input 
                 type='text'
                 placeholder='e.g. Hoodsie'
-                value={ inputName }
-                onChange={ e => setInputName(e.target.value) } 
+                value={ inputTitle }
+                onChange={ e => setinputTitle(e.target.value) } 
                 className='pl-4 w-full h-9 m-1 border border-grayLight placeholder:text-sm placeholder:text-gray'
-            />
+            /> */}
             <p className='m-2 text-sm text-text'> Your review* </p>
             <textarea value={ review } onChange={ e => setReview(e.target.value) }  className=' pl-4 pt-2 w-full bg-white text-grayDark border border-grayLight' cols={ 5 } > </textarea>
-            <p className='text-[0.65rem]'> *All fields are required </p>
+            <p className='text-[0.65rem]'> * Required </p>
 
             <div className='my-7'>
                 <p className='mb-1 text-sm text-text'> Rate this product </p>
@@ -63,8 +62,8 @@ const WriteReviewModal = ({ closeReviewModal }: closeModal ) => {
             
 
             <div className='flex  mt-8 mb-11 justify-between'>
-                <button className=' m-3 w-1/2 h-9 bg-black text-sm text-white '> Submit </button>
-                <button onClick={closeReviewModal} className='w-1/2 m-3 h-9 bg-black text-sm text-white '> Cancel </button>
+                <button onClick={()=> handleCreateReview(review, inputTitle, stars)} className=' m-3 w-1/2 h-9 bg-black text-sm text-white '> Submit </button>
+                <button onClick={()=> closeReviewModal()} className='w-1/2 m-3 h-9 bg-black text-sm text-white '> Cancel </button>
             </div>
             
         </form>
