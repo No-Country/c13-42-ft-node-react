@@ -46,7 +46,7 @@ export const updateViews = async(id: string)=>{
                 }
             },
             questions: {
-                
+                orderBy:{date: 'desc'},
                 include:{
                     answer: {
                         select: {

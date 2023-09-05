@@ -12,7 +12,7 @@ import { type GetServerSidePropsContext } from "next"
 import { IconContext } from "react-icons"
 import { FaHeart, FaRegHeart } from "react-icons/fa"
 import Navbar from "~/components/navbar"
-import { getProductsByID, getProducts } from "~/utils/services/products"
+import { getProductsByID, getProducts, updateViews } from "~/utils/services/products"
 import { useState } from "react"
 import { IoReturnDownForwardSharp } from "react-icons/io5"
 import { ImStarFull, ImStarHalf } from "react-icons/im"
@@ -23,11 +23,20 @@ import WriteReviewModal from "~/components/writeReviewModal"
 import SponsoredProductCard from "~/components/sponsoredProductCard"
 import { postQuestion } from "~/utils/requests/question"
 import { useSession } from "next-auth/react"
+import { split } from "postcss/lib/list"
+import { postAnswer } from "~/utils/requests/answers"
 
 
 const ProductDetail = ({product, products}: {product: Product|any, products: any}) => {
 
   const { data: session, status } = useSession()
+
+  const [answers, setAnswer] = useState <any>(product.questions.map((item: any, i: number)=>{
+    if (!item.answer) {
+      return {...item, answer: {content: ''}}
+    }
+    return item
+  }))
 
   const [questionInput, setQuestionInput] = useState<string>("")
   const [questionArray, setQuestionArray] = useState<Array<any>>(product.questions)
@@ -44,8 +53,12 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
     try {
       if(session?.user.id){
         const question  = await postQuestion(product.id, questionInput, session.user.id)
+        
         if (question) {
-          setQuestionArray([...questionArray, question])
+          console.log(question);
+          setQuestionInput('')
+          setQuestionArray([question, ...questionArray])
+          setAnswer([{...question, answer: {content: ''}}, ...answers])
         }
       }
   
@@ -55,6 +68,30 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
     }
   }
 
+  const handleAnswer =async(questionId: number,content: string )=>{
+    try {
+      if(session?.user.id){
+        const answer  = await postAnswer(questionId, content, session.user.id)
+        
+        if (answer) {
+          console.log(answer);
+          setQuestionInput('')
+          setQuestionArray(questionArray.map((item)=>{
+            if (item.id == questionId) {
+              return {...item, answer}
+            }
+            return item
+          }))
+          
+        }
+
+      }
+  
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
 
   const closeShippingModal = () => {
     setIsShippingModalOpen(false)
@@ -96,9 +133,7 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
       width: "w-[2rem]"
     }
   ]
-import { getProductsByID, getProducts, updateViews } from "~/utils/services/products"
 
-const ProductDetail = ({product, products}: {product: Product|null, products: Product[]}) => {
 
   return (
     <>
@@ -165,15 +200,54 @@ const ProductDetail = ({product, products}: {product: Product|null, products: Pr
               questionArray.length == 0 ? (
                 <p> No questions founded </p> 
               ) : (
-                <div className="mb-4" >
-                  <p className="max-w-[84%] text-lg font-semibold text-text" > Do you have the orange color variant? </p>
+                questionArray.slice(0,3).map((item, i)=>{
+                  return (
+                    <>
+                    <div className="mb-4" >
+                 <div className="flex">
+                 <p className="max-w-[84%] text-lg font-semibold text-text" > {item.content} </p>
+                 <p className="max-w-[84%] ml-3 mt-1 text-sm font-thin text-grayDark" > { item.user.id == session?.user.id ? 'You' :  item.user.email.split('@')[0] } </p>
+                 </div>
+
                     <div className="flex items-start mt-2 ">
+                    
+                      { item.answer && item.answer?.content !== '' ?
+                      <>
                       <IconContext.Provider value={{ className:"mx-3 w-6 h-6" }}>
-                        <IoReturnDownForwardSharp/>
-                      </IconContext.Provider> 
-                      <p className="max-w-[76%] text-sm font-medium"> No, it´s currently out of the stock. Maybe at the end of the year I will have restock of this color </p> 
+                      <IoReturnDownForwardSharp/>
+                    </IconContext.Provider> 
+                       <p className="max-w-[76%] text-sm font-medium"> {item.answer?.content} </p> </>
+                       :
+                       session?.user.is_admin 
+                       ?
+                       <div className="flex">
+                          <input 
+                className="pl-4 w-[22rem] h-9 border border-gray placeholder:text-sm placeholder:text-gray" 
+                placeholder=" Answer to user question"
+                id={item.id}
+                value={ answers[i].answer.content}
+                onChange={ e => setAnswer(answers.map((item:any)=>{
+                  if (item.id == e.target.id) {
+                    return {...item, answer: {content: e.target.value}}
+                  } else {
+                    return item
+                  }
+                })) }
+              />
+                    <button onClick={()=>{handleAnswer(item.id, answers[i].answer.content)}}
+                      className=" ml-4 w-[5rem] h-9 bg-darkBackground text-white" 
+                      > Answer </button>
+                       </div>
+                        :
+                        null
+                       
+                      }
                     </div>
                 </div>
+                  </>
+                  )
+                  
+                })
               )
             }
 

@@ -1,5 +1,5 @@
-export const postQuestion = async (productId: string, content: string, userId: string ) => {
-    const response = await fetch(`http://localhost:3000/api/v0/questions`, {
+export const postAnswer = async (questionId: number, content: string, userId: string ) => {
+    const response = await fetch(`http://localhost:3000/api/v0/answers`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',
@@ -9,7 +9,7 @@ export const postQuestion = async (productId: string, content: string, userId: s
         },
         redirect: 'follow', 
         referrerPolicy: 'no-referrer',
-        body: JSON.stringify({productId, content, userId}) 
+        body: JSON.stringify({questionId, content, userId}) 
       });
       const data = response.json().then(data => {
         console.log(data);
