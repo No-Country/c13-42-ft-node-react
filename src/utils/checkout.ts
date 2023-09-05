@@ -1,7 +1,8 @@
 import { Product, User } from "@prisma/client";
+import { baseUrl } from "./constants";
 
 export const getCheckoutUrl = async () => {
-    const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+    const response = await fetch(`${baseUrl}/api/v0/checkout`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',

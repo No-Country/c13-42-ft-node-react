@@ -1,5 +1,7 @@
+import { baseUrl } from "../constants";
+
 export const addToWishlist = async (productId: string,  userId: string ) => {
-    const response = await fetch(`http://localhost:3000/api/v0/wishlist`, {
+    const response = await fetch(`${baseUrl}/api/v0/wishlist`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',
@@ -17,7 +19,7 @@ export const addToWishlist = async (productId: string,  userId: string ) => {
 
 
 export const removeFromWishlist = async (products: [{id: string}],  userId: string ) => {
-  const response = await fetch(`http://localhost:3000/api/v0/wishlist`, {
+  const response = await fetch(`${baseUrl}/api/v0/wishlist`, {
       method: 'PATCH', 
       mode: 'cors', 
       cache: 'no-cache',

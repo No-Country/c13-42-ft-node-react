@@ -1,5 +1,7 @@
+import { baseUrl } from "../constants";
+
 export const postAnswer = async (questionId: number, content: string, userId: string ) => {
-    const response = await fetch(`http://localhost:3000/api/v0/answers`, {
+    const response = await fetch(`${baseUrl}/api/v0/answers`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',

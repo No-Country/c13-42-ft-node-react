@@ -2,7 +2,7 @@ import { env } from "~/env.mjs";
 
 
 const production = {
-    url: ''
+    url: 'https://c13-42-ft-node-react.vercel.app'
   };
 const development = {
     url: 'http://localhost:3000'

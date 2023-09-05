@@ -1,5 +1,7 @@
+import { baseUrl } from "../constants";
+
 export const postReview = async (productId: string, content: string, userId: string, score: number, title: string ) => {
-    const response = await fetch(`http://localhost:3000/api/v0/reviews`, {
+    const response = await fetch(`${baseUrl}/api/v0/reviews`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',
