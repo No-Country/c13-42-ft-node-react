@@ -11,11 +11,11 @@ import { Product } from "@prisma/client"
 import { signOut, useSession } from "next-auth/react"
 import CartModal from "../cartModal"
 
-const [searchModal, setSearchModal] = useState<boolean>(false)
-
-export const SearchContext = createContext({setSearchModal});
+let init: any = 'any'
+export const SearchContext = createContext(init);
 
 const Navbar = ( { products }: { products: Product[] } ) => {
+  const [searchModal, setSearchModal] = useState<boolean>(false)
 
 
   const { data: session, status } = useSession()

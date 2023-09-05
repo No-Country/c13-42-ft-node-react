@@ -6,12 +6,13 @@ import { createContext, useState } from "react";
 import Navbar from "~/components/navbar";
 import { GetServerSidePropsContext } from "next";
 
+let any:any = 'any'
 
-const [selectOptions, setSelectOptions] = useState<string>('')
-
-export const ProductContext = createContext({ selectOptions, setSelectOptions });
+export const ProductContext = createContext(any);
 
 export default function Category( {products, category}: { products : Product[], category: any } ) {
+
+
   const [selectOptions, setSelectOptions] = useState<string>('')
   const methodSelectOptions = (products:Product[]) => {
     switch(selectOptions) {
