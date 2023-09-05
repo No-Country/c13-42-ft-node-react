@@ -11,7 +11,7 @@ import { Product } from "@prisma/client"
 import { signOut, useSession } from "next-auth/react"
 import CartModal from "../cartModal"
 
-export const SearchContext = createContext();
+export const SearchContext = createContext('');
 
 const Navbar = ( { products }: { products: Product[] } ) => {
 
