@@ -14,7 +14,20 @@ export const updateOrder = async(body: updateOrderType)=>{
             payment_status: body.status
         },
         include: {
-            products: true,
+            products: {
+                select: {
+                    product: {
+                        select: {
+                            id: true,
+                            name: true,
+                            price: true
+                        }
+                    },
+                quantity: true,
+                
+                }
+            },
+            user: true,
         }
       })
       return order
@@ -27,8 +40,15 @@ export const createOrder = async(body: createOrderType)=>{
     const order:Order =  await prisma.order.create({
         data:{
             id: body.id,
-            products: {
-                connect: body.products
+            total: body.total,
+            products:{
+                create: body.products.map((product: any) => {
+                        return {
+                          product: { connect: { id: product.id } },
+                          quantity: product.quantity,
+                        };
+                    })
+                
                 
             },
             user: {
@@ -36,7 +56,7 @@ export const createOrder = async(body: createOrderType)=>{
                     id: body.userId
                 }
             },
-            total: body.total,
+            
 
         }
     })

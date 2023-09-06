@@ -19,14 +19,7 @@ const ProductCard = ({ product }: {product: Product} ) => {
     const [items, setItems] = useState([]);
 
 
-    function getCart() {
-        const local = localStorage.getItem('cart') 
-        const items = local ?  JSON.parse(local) : []
-        if (items) {
-            setItems(items);
-        }
-        return items
-      }
+   
     useEffect(() => {
       getCart()
     }, []);
@@ -47,6 +40,15 @@ const ProductCard = ({ product }: {product: Product} ) => {
         setImgLoad(true)
     }
 
+
+    function getCart() {
+        const local = localStorage.getItem('cart') 
+        const items = local ?  JSON.parse(local) : []
+        if (items) {
+            setItems(items);
+        }
+        return items
+      }
     const handleAddToCart = () => {
         const cart = getCart()
         console.log([{...product, quantity: 1},...cart]);
@@ -86,7 +88,7 @@ const ProductCard = ({ product }: {product: Product} ) => {
                     alt='producto' onLoad={loadImage} 
                     loading='lazy' 
                     className='w-[250px] h-[216px] rounded-t-md'/>
-                {(imgLoad && showElement)?null:<div className="w-full h-full top-0 absolute h-full bg-loadingImg"></div>}
+                {(imgLoad && showElement)?null:<div className="w-full h-full top-0 absolute  bg-loadingImg"></div>}
 
             </picture>
 

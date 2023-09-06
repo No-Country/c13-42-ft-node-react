@@ -10,10 +10,14 @@ import Navbar from '~/components/navbar'
 import { BsArrow90DegLeft, BsArrowLeft } from 'react-icons/bs'
 import { cart } from '~/components/cartModal'
 import {  useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 
 
 const Cart = () => {
+
+  const router = useRouter()
+
   const [url, seturl] = useState<null|string>(null)
   const [id, setId] = useState<string>('')
   const [items, setItems] = useState([]);
@@ -31,75 +35,74 @@ const Cart = () => {
     }
   }, []);
 
+  const getCheckoutUrl = async () => {
+    seturl(null)
+    setId("")
+    const cart = items.flatMap((item: any)=>{
+      if (item.quantity === 0 ) {
+        return []
+      } else {
+        return {
+          id: item.id,
+          title: item.name,
+          quantity: item.quantity,
+          currency_id: 'USD',
+          unit_price: item.price,
+        }
+      }
+    })
+    const sum = cart.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+  setTotal(sum)
+    console.log(cart);
+    setProducts(cart)
+    
+    if (session?.user && cart.length > 0) {
+        const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+        method: 'POST', 
+        mode: 'cors', 
+        cache: 'no-cache',
+        credentials: 'same-origin', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow', 
+        referrerPolicy: 'no-referrer',
+        // products: [
+        //   {
+        //     id:'1234',
+        //     title: 'Test',
+        //     quantity: 1,
+        //     currency_id: 'USD',
+        //     unit_price: 10.5
+        //   }
+        // ],
+        body: JSON.stringify({user: session.user?.email, products: cart}) 
+      });
+      response.json().then(data => {
+        console.log(data);
+        seturl(data.url)
+        setId(data.id)
+      }).catch((error) => {
+        console.log(error)
+        seturl(null) 
+    })
+    } 
+    // handle not user (redirect to login)
+
+}
 
   useEffect(() => {
-    
-    const getCheckoutUrl = async () => {
-        seturl(null)
-        setId("")
-        const cart = items.flatMap((item: any)=>{
-          if (item.quantity === 0 ) {
-            return []
-          } else {
-            return {
-              id: item.id,
-              title: item.name,
-              quantity: item.quantity,
-              currency_id: 'USD',
-              unit_price: item.price,
-            }
-          }
-        })
-        const sum = cart.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
-      setTotal(sum)
-        console.log(cart);
-        setProducts(cart)
-        
-        if (session?.user && cart.length > 0) {
-            const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
-            method: 'POST', 
-            mode: 'cors', 
-            cache: 'no-cache',
-            credentials: 'same-origin', 
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            redirect: 'follow', 
-            referrerPolicy: 'no-referrer',
-            // products: [
-            //   {
-            //     id:'1234',
-            //     title: 'Test',
-            //     quantity: 1,
-            //     currency_id: 'USD',
-            //     unit_price: 10.5
-            //   }
-            // ],
-            body: JSON.stringify({user: session.user?.email, products: cart}) 
-          });
-          response.json().then(data => {
-            console.log(data);
-            seturl(data.url)
-            setId(data.id)
-          }).catch((error) => {
-            console.log(error)
-            seturl(null) 
-        })
-        } 
-        // handle not user (redirect to login)
-
-    }
-
-    
     getCheckoutUrl()
   }, [items])
 
 
   const handleCreateOrder =async ()=>{
     const cart = products.map((item: any)=>{
-      return {id:item.id}
+      return {id:item.id, quantity: item.quantity}
     })
-    const sum = items.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+    const sum = products.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+    console.log(sum);
+    
     setTotal(sum)
     if (session?.user) {
         const response = await fetch(`http://localhost:3000/api/v0/orders`, {
@@ -117,7 +120,7 @@ const Cart = () => {
       });
       response.json().then(data => {
         console.log(data);
-        
+        removeAll()
       }).catch((error) => {
         console.log(error)
     })
@@ -156,6 +159,28 @@ const Cart = () => {
     localStorage.setItem('cart', JSON.stringify(updated));
   }
 
+  const removeOne = (id: string) => {
+    const updated: any = items.flatMap((item: any)=>{
+      if(item.id ===id){
+          return []
+      }
+      return item
+    })
+    setItems(updated)
+    localStorage.setItem('cart', JSON.stringify(updated));
+  }
+  const removeAll = () => {
+    const updated: any = []
+    setItems(updated)
+    setProducts(updated)
+    setId('')
+    seturl(null)
+    localStorage.setItem('cart', JSON.stringify(updated));
+  }
+
+  
+
+
   return (
 
     <>
@@ -171,7 +196,7 @@ const Cart = () => {
         <div className='mr-14 w-[66%]'>
             <div className='flex justify-between mb-5 py-3 w-full h-auto border-b border-b-grayLight '>
                 <p className='font-semibold' > Items {items.length} </p>
-                <button className='text-sm font-medium text-warning' > Remove all </button>
+                <button className='text-sm font-medium text-warning' onClick={removeAll}> Remove all </button>
             </div>
 
             { /*Product Detail */ }
@@ -194,8 +219,8 @@ const Cart = () => {
                       </Link>
                         <p className='text-sm font-medium text-grayDark' > {item.gender} | {item.product_type} </p>
                         <p className='mb-2 text-sm font-medium text-grayDark' > Size: {item.product_type === 'APPAREL' ? 'M' : '6.5'} </p>
-                        <div className='flex items-center gap-3' >
-                            <IconContext.Provider value={{ className:"w-3 h-3 text-gray-400 cursor-pointer hover:text-grayDark " }} >
+                        <div onClick={()=>removeOne(item.id)} className='flex items-center gap-3 hover:text-warning duration-200'  >
+                            <IconContext.Provider  value={{ className:"w-3 h-3 text-gray-400 cursor-pointer hover:text-grayDark " }} >
                                 <FaTrash />
                             </IconContext.Provider>
                             <p className='text-sm font-medium text-text' > Remove </p>
@@ -259,9 +284,41 @@ const Cart = () => {
               <p className='font-semibold '> ${total} </p>
             </div>
 
-            <button className='mb-8 w-full h-12 bg-darkBackground text-white '>
-              Checkout
+            {
+              confimation
+              ?
+              <>
+              <p className='text-center font-light underline underline-offset-2'>This will take you to a payment site</p>
+                <div className='flex items-center justify-between'>
+                
+                <button  disabled={!url} onClick={(e) => {
+                if (url) {
+                    try {
+                        e.preventDefault()
+                        router.push(url)
+                        handleCreateOrder()
+                    } catch (error) {
+                        console.log(error);
+                        
+                    }
+                }
+            }} className={` mb-8 m-1 w-[100%] h-12  ${!url ? 'bg-gray': 'bg-darkBackground'}  text-sm text-white`}>
+              Go!
             </button>
+            <button onClick={()=>setConfirmation(false)} className='mb-8 m-1 w-full h-12 border-darkBackground bg-white border text-darkBackground '>
+                Cancel
+                </button>
+              </div>
+              </>
+              
+              :
+              <button onClick={()=>{
+                getCheckoutUrl()
+                setConfirmation(true)}} className='mb-8 w-full h-12 bg-darkBackground text-white '>
+                Checkout
+              </button>
+              
+            }
 
             <p className='text-sm leading-3'> Payment method </p> 
 

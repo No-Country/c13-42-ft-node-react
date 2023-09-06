@@ -36,7 +36,26 @@ const [products, setProducts] = useState<cart|any>();
 const [confimation, setConfirmation] = useState<boolean>(false);
 
 
-  
+const removeAll = () => {
+  const updated: any = []
+  setItems(updated)
+  setProducts(updated)
+  setId('')
+  seturl(null)
+  localStorage.setItem('cart', JSON.stringify(updated));
+}
+
+const removeOne = (id: string) => {
+  const updated: any = items.flatMap((item: any)=>{
+    if(item.id ===id){
+        return []
+    }
+    return item
+  })
+  setItems(updated)
+  localStorage.setItem('cart', JSON.stringify(updated));
+}
+
   const addCount = (id: string) => {
     const updated: any  = items.map((item: any)=>{
       if(item.id ===id){
@@ -143,9 +162,9 @@ const [confimation, setConfirmation] = useState<boolean>(false);
 
   const handleCreateOrder =async ()=>{
     const cart = products.map((item: any)=>{
-      return {id:item.id}
+      return {id:item.id, quantity: item.quantity}
     })
-    const total = items.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+    const total = products.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
     if (user) {
         const response = await fetch(`http://localhost:3000/api/v0/orders`, {
         method: 'POST', 
@@ -162,10 +181,8 @@ const [confimation, setConfirmation] = useState<boolean>(false);
       });
       response.json().then(data => {
         console.log(data);
-        
-      }).catch((error) => {
-        console.log(error)
-    })
+        removeAll()
+      })
     }
 
     // handle not user (redirect to login)
@@ -224,7 +241,7 @@ const [confimation, setConfirmation] = useState<boolean>(false);
                                     > + </div>
                                 </div> 
                                 
-                                <div className='flex items-center gap-2 mt-3 text-gray cursor-pointer ' >
+                                <div onClick={()=>removeOne(item.id)} className='hover:text-warning duration-200 flex items-center gap-2 mt-3 text-gray cursor-pointer ' >
                                     <IconContext.Provider value={{ className:"w-3 h-3  hover:text-grayDark" }} >
                                         <FaTrash/>
                                     </IconContext.Provider>
@@ -270,6 +287,7 @@ const [confimation, setConfirmation] = useState<boolean>(false);
                                 router.push(url)
                                 handleCreateOrder()
                             } catch (error) {
+                                console.log(error);
                                 
                             }
                         }
@@ -292,7 +310,7 @@ const [confimation, setConfirmation] = useState<boolean>(false);
                         </button>
                         <Link href="/cart" className=' w-1/3 flex items-center justify-center'>
                         <button  className={`mt-4 mb-5  h-11 m-1 p-1  bg-white border-blackZinc  border text-sm text-blackZinc`}>
-                          { `See all items( ${items.length} )` }
+                          { `See all items ( ${items.length} )` }
                         </button>
                  
                         </Link>    

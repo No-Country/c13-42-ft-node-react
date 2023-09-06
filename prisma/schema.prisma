@@ -40,59 +40,55 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String             @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?            @unique
   emailVerified DateTime?
   phone         String?
   address       String?
-  is_admin      Boolean   @default(false)
+  is_admin      Boolean            @default(false)
   image         String?
   accounts      Account[]
   cart          Cart?
   order         Order[]
-  sessions      Session[]
-  wishlistId    Wishlist?
-  reviews       Review[]
-  questions     ProductQuestions[]
   answers       ProductAnswers[]
+  questions     ProductQuestions[]
+  reviews       Review[]
+  sessions      Session[]
+  wishlist      Wishlist?
 }
-
 
 model ProductQuestions {
-  id        Int      @id @default(autoincrement())
-  userId      String 
-  content      String
-  date      DateTime @default(now())
-  productId String   
-  user      User      @relation(fields: [userId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
-  answer ProductAnswers?
+  id        Int             @id @default(autoincrement())
+  userId    String
+  content   String
+  date      DateTime        @default(now())
+  productId String
+  answer    ProductAnswers?
+  product   Product         @relation(fields: [productId], references: [id])
+  user      User            @relation(fields: [userId], references: [id])
 }
 
-
 model ProductAnswers {
-  id        Int      @id @default(autoincrement())
-  content      String
-  date      DateTime @default(now())
-  userId      String 
-  questionId Int @unique
-  user      User      @relation(fields: [userId], references: [id])
-  question      ProductQuestions      @relation(fields: [questionId], references: [id])
-
-  
+  id         Int              @id @default(autoincrement())
+  content    String
+  date       DateTime         @default(now())
+  userId     String
+  questionId Int              @unique
+  question   ProductQuestions @relation(fields: [questionId], references: [id])
+  user       User             @relation(fields: [userId], references: [id])
 }
 
 model Review {
   id        Int      @id @default(autoincrement())
-  userId      String 
   title     String
-  content      String
   date      DateTime @default(now())
-  productId String   
   score     Int
-  user      User      @relation(fields: [userId], references: [id])
+  content   String
+  productId String
+  userId    String
   product   Product  @relation(fields: [productId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Wishlist {
@@ -111,15 +107,15 @@ model Refund {
 }
 
 model Order {
-  id       String    @id @default(cuid())
-  date     DateTime  @default(now())
-  userID   String    
-  total    Float
-  discount Float?
-  payment_status PaymentStatus @default(PENDING)
-  user     User      @relation(fields: [userID], references: [id])
-  refund   Refund?
-  products Product[] @relation("OrderToProduct")
+  id             String           @id @default(cuid())
+  date           DateTime         @default(now())
+  userID         String
+  total          Float
+  discount       Float?
+  payment_status PaymentStatus    @default(PENDING)
+  user           User             @relation(fields: [userID], references: [id])
+  products       ProductOnOrder[]
+  refund         Refund?
 }
 
 model Cart {
@@ -139,33 +135,41 @@ model VerificationToken {
 }
 
 model Product {
-  id            String     @id @default(cuid())
+  id            String             @id @default(cuid())
   name          String
-  total_sales   Int        @default(0)
-  stars         Float      @default(0)
+  total_sales   Int                @default(0)
+  stars         Float              @default(0)
   current_price Float?
   price         Float
   brand         String
-  color         Boolean    @default(false)
-  size          Boolean    @default(true)
-  stock         Int        @default(0)
-  views         Int        @default(0)
+  color         Boolean            @default(false)
+  size          Boolean            @default(true)
+  stock         Int                @default(0)
+  views         Int                @default(0)
   category      String
   gender        String
   product_type  String
   sub_title     String
   images        String[]
-  reviews        Review[]
-  carts         Cart[]     @relation("CartToProduct")
-  orders        Order[]    @relation("OrderToProduct")
-  wishlists     Wishlist[] @relation("ProductToWishlist")
-  questions ProductQuestions[]
+  orders        ProductOnOrder[]
+  questions     ProductQuestions[]
+  reviews       Review[]
+  carts         Cart[]             @relation("CartToProduct")
+  wishlists     Wishlist[]         @relation("ProductToWishlist")
 }
 
+model ProductOnOrder {
+  productId String
+  orderId   String
+  quantity  Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
+  @@id([productId, orderId])
+}
 
 enum PaymentStatus {
-  PENDING 
+  PENDING
   SUCCESS
   FAILURE
 }

@@ -60,6 +60,30 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
   
   }, [session])
   
+  function getCart() {
+    const local = localStorage.getItem('cart') 
+    const items = local ?  JSON.parse(local) : []
+    return items
+  }
+const handleAddToCart = () => {
+    const cart = getCart()
+    console.log([{...product, quantity: 1},...cart]);
+    if (cart.some((element: any) => element.id === product.id)) {
+        const updated = cart.map((item:any)=>{
+            if (item.id === product.id) {
+                return {...item, quantity: item.quantity + 1}
+            }else{
+                return item
+            }
+            
+        })
+        localStorage.setItem('cart', JSON.stringify(updated));
+    }else{
+        localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1},...cart]));
+    }
+
+}
+
 
   const handleCreateQuestion =async()=>{
     try {
@@ -410,7 +434,7 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
         <p className="mb-8 text-3xl font-semibold text-text" > ${product?.price}</p>
 
         <div className="mt-4 flex items-center gap-5">
-            <button className="w-56 h-12 bg-darkBackground text-white cursor-pointer"> 
+            <button onClick={handleAddToCart} className="w-56 h-12 bg-darkBackground text-white cursor-pointer"> 
                 Add to cart 
             </button>
             <button 
