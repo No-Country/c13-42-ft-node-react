@@ -7,6 +7,7 @@ import {  useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { IconContext } from 'react-icons'
 import { FaRegTimesCircle, FaTrash } from "react-icons/fa"
+import { baseUrl } from '~/utils/constants'
 
 interface functionToggleCart {
     toggleCartModal: () => void,
@@ -121,7 +122,7 @@ const removeOne = (id: string) => {
         setProducts(cart)
         
         if (user && cart.length > 0) {
-            const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+            const response = await fetch(`${baseUrl}/api/v0/checkout`, {
             method: 'POST', 
             mode: 'cors', 
             cache: 'no-cache',
@@ -166,7 +167,7 @@ const removeOne = (id: string) => {
     })
     const total = products.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
     if (user) {
-        const response = await fetch(`http://localhost:3000/api/v0/orders`, {
+        const response = await fetch(`${baseUrl}/api/v0/orders`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',

@@ -57,7 +57,7 @@ const Cart = () => {
     setProducts(cart)
     
     if (session?.user && cart.length > 0) {
-        const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+        const response = await fetch(`${baseUrl}/api/v0/checkout`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',
@@ -105,7 +105,7 @@ const Cart = () => {
     
     setTotal(sum)
     if (session?.user) {
-        const response = await fetch(`http://localhost:3000/api/v0/orders`, {
+        const response = await fetch(`${baseUrl}/api/v0/orders`, {
         method: 'POST', 
         mode: 'cors', 
         cache: 'no-cache',
