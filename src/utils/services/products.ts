@@ -21,11 +21,7 @@ export const getProductsByID = async(id: string)=>{
                     }
                 }
             },
-            orders: {
-                select:{
-                    userID: true
-                }
-            },
+            
             questions: {
                 
                 include:{
@@ -59,11 +55,7 @@ export const updateViews = async(id: string)=>{
                     }
                 }
             },
-            orders: {
-                select:{
-                    userID: true
-                }
-            },
+            
             questions: {
                 orderBy:{date: 'desc'},
                 include:{

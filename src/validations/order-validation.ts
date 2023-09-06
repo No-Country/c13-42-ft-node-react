@@ -37,7 +37,9 @@ export const createOrderSchema = z.object({
       .min(3)
       .trim(),
       products: z.array(z.object({
-        id: z.string({required_error: "product id list is requiered, [{id: 'id'}, ...] "})
+        id: z.string({required_error: "product id list is requiered, [{id: 'id'}, ...] "}),
+        quantity: z.number({required_error: "product id list is requiered, [{id: 'id'}, ...] "})
+
       },{required_error: "product id list is requiered [{id: 'id'}]"})),
 
 })

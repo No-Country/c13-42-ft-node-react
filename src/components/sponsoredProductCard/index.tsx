@@ -5,7 +5,7 @@ const SponsoredProductCard = () => {
   return (
     <div className="w-full h-auto">
             <h2 className="mt-6 mb-2 text-xs text-text uppercase"> Sponsored </h2> 
-            <img src="/assets/sponsored_product.jpg" alt="sponsored product" className="w-[52%] h-[16rem]" />
+            <img src="/assets/sponsored_product.jpg" alt="sponsored product" className="w-[52%] h-[16rem] object-cover" />
             <div className="pl-[2%] w-[52%] h-auto bg-darkBackground text-grayLightSoft ">
                 <p className="pt-3 text-[0.65rem] font-semibold uppercase"> Light up the street  </p>
                 <p className="text-lg font-semibold"> Nike Shoes - Neon Jungle</p>
