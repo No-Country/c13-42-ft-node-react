@@ -11,6 +11,7 @@ import { BsArrow90DegLeft, BsArrowLeft } from 'react-icons/bs'
 import { cart } from '~/components/cartModal'
 import {  useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { baseUrl } from '~/utils/constants'
 
 
 
