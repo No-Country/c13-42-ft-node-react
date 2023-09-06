@@ -8,11 +8,20 @@ import { IconContext } from 'react-icons'
 import { FaLongArrowAltLeft,  FaTrash } from "react-icons/fa"
 import Navbar from '~/components/navbar'
 import { BsArrow90DegLeft, BsArrowLeft } from 'react-icons/bs'
+import { cart } from '~/components/cartModal'
+import {  useSession } from 'next-auth/react'
 
 
 
 const Cart = () => {
-  const [items, setItems] = useState([1]);
+  const [url, seturl] = useState<null|string>(null)
+  const [id, setId] = useState<string>('')
+  const [items, setItems] = useState([]);
+  const [products, setProducts] = useState<cart|any>();
+  const [confimation, setConfirmation] = useState<boolean>(false);
+  const { data: session , status } = useSession()
+  const [total, setTotal] = useState(0);
+
 
   useEffect(() => {
     const local = localStorage.getItem('cart') 
@@ -24,9 +33,128 @@ const Cart = () => {
 
 
   useEffect(() => {
-  localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
-  const [cartCount, setCartCount] = useState<number>(1)
+    
+    const getCheckoutUrl = async () => {
+        seturl(null)
+        setId("")
+        const cart = items.flatMap((item: any)=>{
+          if (item.quantity === 0 ) {
+            return []
+          } else {
+            return {
+              id: item.id,
+              title: item.name,
+              quantity: item.quantity,
+              currency_id: 'USD',
+              unit_price: item.price,
+            }
+          }
+        })
+        const sum = cart.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+      setTotal(sum)
+        console.log(cart);
+        setProducts(cart)
+        
+        if (session?.user && cart.length > 0) {
+            const response = await fetch(`http://localhost:3000/api/v0/checkout`, {
+            method: 'POST', 
+            mode: 'cors', 
+            cache: 'no-cache',
+            credentials: 'same-origin', 
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow', 
+            referrerPolicy: 'no-referrer',
+            // products: [
+            //   {
+            //     id:'1234',
+            //     title: 'Test',
+            //     quantity: 1,
+            //     currency_id: 'USD',
+            //     unit_price: 10.5
+            //   }
+            // ],
+            body: JSON.stringify({user: session.user?.email, products: cart}) 
+          });
+          response.json().then(data => {
+            console.log(data);
+            seturl(data.url)
+            setId(data.id)
+          }).catch((error) => {
+            console.log(error)
+            seturl(null) 
+        })
+        } 
+        // handle not user (redirect to login)
+
+    }
+
+    
+    getCheckoutUrl()
+  }, [items])
+
+
+  const handleCreateOrder =async ()=>{
+    const cart = products.map((item: any)=>{
+      return {id:item.id}
+    })
+    const sum = items.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+    setTotal(sum)
+    if (session?.user) {
+        const response = await fetch(`http://localhost:3000/api/v0/orders`, {
+        method: 'POST', 
+        mode: 'cors', 
+        cache: 'no-cache',
+        credentials: 'same-origin', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        redirect: 'follow', 
+        referrerPolicy: 'no-referrer',
+        // products in cart [{id: '2e6701f7-951f-5907-ad5e-90d7266f3e0e'}, ...]
+        body: JSON.stringify({id: id,userId: session.user?.id, products: cart, total : sum}) 
+      });
+      response.json().then(data => {
+        console.log(data);
+        
+      }).catch((error) => {
+        console.log(error)
+    })
+    }
+
+    // handle not user (redirect to login)
+
+  }
+
+
+
+  const addCount = (id: string) => {
+    const updated: any  = items.map((item: any)=>{
+      if(item.id ===id){
+        return {...item, quantity: item.quantity+1}
+      }
+      return item
+    })
+    setItems(updated)
+    localStorage.setItem('cart', JSON.stringify(updated));
+
+
+  }
+
+  const subtractCount = (id: string) => {
+    const updated: any = items.flatMap((item: any)=>{
+      if(item.id ===id){
+       if (item.quantity == 1) {
+          return []
+       }
+       return {...item, quantity: item.quantity-1}
+      }
+      return item
+    })
+    setItems(updated)
+    localStorage.setItem('cart', JSON.stringify(updated));
+  }
 
   return (
 
@@ -48,17 +176,24 @@ const Cart = () => {
 
             { /*Product Detail */ }
             {
-              items.map(()=>{
+              items.length > 0
+              ?
+              items.map((item:any)=>{
                 return (
-                  <div className='flex justify-between items-center pb-6 border-b border-b-grayLight ' >
-                    
-                    <img src='/assets/hero_sport_4.jpg' alt='product' className='w-1/5 h-36 object-contain'/>
-                <div className='flex gap-6' >  
+                  <div className='flex justify-evenly items-center pb-6 border-b border-b-grayLight ' >
+                    <Link className='mt-2' href={`/products/${item.id}`}>
+                    <img src={item.images ? item.images[0] : 'https://www.freeiconspng.com/img/23485'} alt='product' className='w-full h-36 object-contain'/>
+
+                    </Link>
+                <div className='flex justify-start' >  
                     
                     <div className='flex-col w-full' >
-                        <p className='mb-1 text-xl font-semibold text-text' > Black Carbon </p>
-                        <p className='text-sm font-medium text-grayDark' > Man | Sneaker </p>
-                        <p className='mb-2 text-sm font-medium text-grayDark' > { `Size 5.5` } </p>
+                      <Link href={`/products/${item.id}`}>
+                      <p className='mb-1 text-ellipsis whitespace-nowrap w-[17rem] overflow-hidden text-xl font-semibold text-text' > {item.name} </p>
+
+                      </Link>
+                        <p className='text-sm font-medium text-grayDark' > {item.gender} | {item.product_type} </p>
+                        <p className='mb-2 text-sm font-medium text-grayDark' > Size: {item.product_type === 'APPAREL' ? 'M' : '6.5'} </p>
                         <div className='flex items-center gap-3' >
                             <IconContext.Provider value={{ className:"w-3 h-3 text-gray-400 cursor-pointer hover:text-grayDark " }} >
                                 <FaTrash />
@@ -67,15 +202,26 @@ const Cart = () => {
                         </div>   
                     </div>
                 </div>
-
-              <ProductCounter 
-                cartCount={ cartCount }
-                setCartCount={ setCartCount }
-              />
-              <p className='text-lg font-semibold text-text' > { `$24.25` } </p>
+                <div className='flex flex-col items-center justify-center'>
+                <p className='text-lg font-semibold text-text' > ${ item.price * item.quantity} </p>
+                <div className='mt-2 flex items-center gap-3'>
+                                    <div 
+                                        className='flex justify-center items-center w-[1.3rem] h-[1.3rem] border border-accentTeal font-semibold text-accentTeal cursor-pointer' 
+                                        onClick={ ()=> subtractCount(item.id) }
+                                    > - </div>
+                                    <div className='flex justify-center items-center w-[1.3rem] h-[1.3rem] text-xs bg-accentTeal text-white'  > { item.quantity } </div>
+                                    <div 
+                                        className='flex justify-center items-center w-[1.3rem] h-[1.3rem] border border-accentTeal font-semibold text-accentTeal cursor-pointer' 
+                                        onClick={ ()=> addCount(item.id) }
+                                    > + </div>
+                </div> 
+                </div>
+             
             </div>
                 )
               })
+              :
+              <p>No products in cart</p>
             }
 
             { /*Continue Shopping */ }
@@ -96,7 +242,7 @@ const Cart = () => {
 
             <div className='flex justify-between'>
               <p className='text-grayDark'> Subtotal </p>
-              <p className='font-semibold '> $60.50 </p>
+              <p className='font-semibold '> ${total} </p>
             </div>
 
             <div className='my-[0.65rem] w-full border-b border-b-grayLight' />
@@ -110,7 +256,7 @@ const Cart = () => {
 
             <div className='flex justify-between mb-7'>
               <p className='font-semibold' > Total </p>
-              <p className='font-semibold '> $60.50 </p>
+              <p className='font-semibold '> ${total} </p>
             </div>
 
             <button className='mb-8 w-full h-12 bg-darkBackground text-white '>

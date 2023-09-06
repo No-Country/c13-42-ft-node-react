@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     
     if (req.method === "POST") {
+      
         const preference: CreatePreferencePayload = {
             items: req.body.products,
             // [
@@ -27,6 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 success: `${baseUrl}/success`,
                 failure:`${baseUrl}/`
             },
+            
             payer:{
                 email: req.body.user,
                 

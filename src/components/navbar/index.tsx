@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, createContext } from "react"
+import { useState, createContext, useEffect } from "react"
 import { IconContext } from "react-icons"
 import { FaShoppingCart, FaHeart, FaSistrix, FaUser } from "react-icons/fa"
 import LoginModal from "../loginModal"
@@ -16,12 +16,11 @@ export const SearchContext = createContext(init);
 
 const Navbar = ( { products }: { products: Product[] } ) => {
   const [searchModal, setSearchModal] = useState<boolean>(false)
-
+  
 
   const { data: session, status } = useSession()
 
 
-  const [cartCount, setCartCount] = useState<number>(0)
 
 
 
@@ -106,9 +105,7 @@ const Navbar = ( { products }: { products: Product[] } ) => {
           <div className="relative" onClick={() => setIsCartModalOpen(true)}>
             <IconContext.Provider value={{ className:"h-5 w-5 text-text"}} >
             <FaShoppingCart />
-              <div className="absolute bottom-2 left-3 flex justify-center items-center w-5 h-5 rounded-full  text-xs font-normal text-white bg-accent"> 
-                { Number(cartCount) } 
-              </div>
+            
             </IconContext.Provider>
           </div>
         </div>

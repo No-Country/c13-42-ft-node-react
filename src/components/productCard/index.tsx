@@ -12,19 +12,61 @@ interface ProductCard {
 
 
 const ProductCard = ({ product }: {product: Product} ) => {
-const [imgLoad, setImgLoad] = useState<boolean>(false)
-const [showElement, setShowElement] = useState<boolean>(false)
-const loadImage = () => {
-    setImgLoad(true)
-}
 
-useEffect(() => {
-    const timer = setTimeout(() => {
-        setShowElement(true);
-      }, 2000);  
-      return () => clearTimeout(timer);   
-    
-}, [])
+
+    const [imgLoad, setImgLoad] = useState<boolean>(false)
+    const [showElement, setShowElement] = useState<boolean>(false)
+    const [items, setItems] = useState([]);
+
+
+    function getCart() {
+        const local = localStorage.getItem('cart') 
+        const items = local ?  JSON.parse(local) : []
+        if (items) {
+            setItems(items);
+        }
+        return items
+      }
+    useEffect(() => {
+      getCart()
+    }, []);
+  
+  
+
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowElement(true);
+          }, 2000);  
+          return () => clearTimeout(timer);   
+        
+    }, [])
+
+
+    const loadImage = () => {
+        setImgLoad(true)
+    }
+
+    const handleAddToCart = () => {
+        const cart = getCart()
+        console.log([{...product, quantity: 1},...cart]);
+        if (cart.some((element: any) => element.id === product.id)) {
+            const updated = cart.map((item:any)=>{
+                if (item.id === product.id) {
+                    return {...item, quantity: item.quantity + 1}
+                }else{
+                    return item
+                }
+                
+            })
+            localStorage.setItem('cart', JSON.stringify(updated));
+        }else{
+            localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1},...cart]));
+        }
+
+    }
+
+
   return (
 
     <Link href={`/products/${product.id}`} className='justify-center items-center flex border-[1px] border-white hover:border-[1px] hover:border-black hover:rounded-md ease-in-out'>
@@ -53,7 +95,11 @@ useEffect(() => {
                 <p className='mb-1 font-bold  text-text h-20'> { product.name } </p>
                 <p className='mb-4 text-xl font-light'> {`$${product.price}` } </p>
                 <div className='flex justify-center items-center'>
-                    <button className='w-28 h-9 bg-darkBackground text-sm text-white rounded-md'> Add to cart </button>
+                    <button onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleAddToCart();
+                    }} className='w-28 h-9 bg-darkBackground text-sm text-white rounded-md'> Add to cart </button>
                 </div>
             </div>
         </div>
