@@ -17,7 +17,7 @@ const ProductSmallModal = ({ outfit }: smallModal ) => {
 
   return (
 
-    <div className='absolute top-[-6%] left-[-10%] flex gap-2 items-center px-[5%] w-[9.2rem] h-20 bg-white text-text rounded-md'>
+    <div className='invisible absolute top-[-6%] left-[-10%] flex gap-2 items-center px-[5%] w-[9.2rem] h-20 bg-white text-text rounded-md sm:visible'>
         <img src={ outfit.productInfo.productImage }  alt={ outfit.productInfo.productName } className=' w-7 h-7 object-cover ' />
         <div>
             <p className='text-xs font-semibold text-text' > { outfit.productInfo.productName.substring(0, 12) + "..." } </p>

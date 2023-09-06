@@ -67,13 +67,13 @@ const ShareYourOutfit= () => {
 
   return (
 
-    <div className='relative w-full h-screen bg-darkBackground text-white'>
+    <div className='relative w-full h-[100%] bg-darkBackground text-white'>
       <div >
-        <h2 className='pt-12 text-3xl font-medium text-center' > Hoodsy Community </h2>
-        <p className='mt-3 mx-[13%] text-center leading-7' > Share your unique style using the hashtag <span className='font-semibold'> #hoodycommunity </span>. Every week we choose the most trendy outfits from our social media. Try it and you can get discounts and special rewards. </p>
+        <h2 className='pt-9 text-3xl font-medium text-center sm:pt-12' > Hoodsy Community </h2>
+        <p className='mt-3 mx-[13%] text-sm text-center leading-7 sm:text-base' > Share your unique style using the hashtag <span className='font-semibold'> #hoodycommunity </span>. Every week we choose the most trendy outfits from our social media. Try it and you can get discounts and special rewards. </p>
       </div>
 
-      <div className='flex justify-between mt-24 mx-[8%]' >
+      <div className='flex flex-col items-center mt-12 mx-[8%] sm:flex sm:flex-row sm:flex-wrap sm:justify-between sm:mt-24'  >
         { 
           outfits.map( (outfit, index) => (
             <div 
@@ -82,8 +82,9 @@ const ShareYourOutfit= () => {
               onMouseLeave={() => setIsShownModal(-1) }
               className="relative"
             > 
-              <img src={ outfit.userImage } alt='user tag' className='w-[14rem] h-[18rem] object-cover rounded-sm'/>
-              <p className='mt-2 text-sm font-medium text-center '> { outfit.userTag } </p> 
+              <img src={ outfit.userImage } alt='user tag' className='w-[9rem] h-[16rem] object-cover rounded-sm sm:w-[12rem] lg:w-[13rem] 
+              md:mb-0 sm:h-[18rem] '/>
+              <p className='mt-2 pb-14 text-sm font-medium text-center md:mb-0 '> { outfit.userTag } </p> 
 
               {
                 isShownModal === index && (
