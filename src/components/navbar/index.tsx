@@ -84,14 +84,14 @@ const Navbar = ( { products }: { products: Product[] } ) => {
             </IconContext.Provider>
           </div>
           {
-          session?.user &&  status == "authenticated"
+          session?.user &&  status == "authenticated" 
           ?
           <>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} > 
             <FaHeart />
           </IconContext.Provider>
 
-          <Link href={`/user/${session?.user.id}`}>
+          <Link href={session?.user.is_admin ? "/admin/dashboard" : (`/user/${session?.user.id}`)}>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} >   
             <FaUser />
           </IconContext.Provider>
