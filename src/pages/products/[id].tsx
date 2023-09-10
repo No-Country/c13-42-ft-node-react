@@ -256,14 +256,14 @@ const handleCreateQuestion =async()=>{
   return (
     <>
     <Navbar products={products} category={''}/>
-    <div className=' flex justify-between mt-20 ml-[10%] mr-[4%] h-auto'>
-      <div className="w-[50%]" >
+    <div className=' flex flex-col md:flex-row justify-between mt-20 ml-[10%] mr-[4%] h-auto'>
+      <div className="w-full md:w-[50%] flex md:block items-center justify-center" >
         <img src={product?.images[0]} alt='' className='w-[70%] h-[24rem] object-contain'/>
 
         <div>
 
           { /*FAQ SECTION */ }
-          <div className="mt-24 w-full h-auto" >
+          <div className="hidden md:block mt-24 w-full h-auto" >
             <h2 className="mb-5 text-4xl font-medium text-text " > FAQ </h2>
               <h3 className="mb-2 text-xl font-medium text-text"> Topics </h3>
               <div className="flex gap-4" >
@@ -293,12 +293,12 @@ const handleCreateQuestion =async()=>{
 
 
           {/* Ask to seller section */  }
-          <div className="mt-8 mb-6 w-[84%] border border-grayLight" />
+          <div className="hidden md:block mt-8 mb-6 w-[84%] border border-grayLight" />
             {
               session?.user.id ? 
               <>
-                <h3 className="mb-2 text-xl font-medium text-text"> Ask to seller  </h3>
-            <div className="flex gap-5"  >
+                <h3 className="hidden md:flex mb-2 text-xl font-medium text-text"> Ask to seller  </h3>
+            <div className=" gap-5 hidden md:flex"  >
               <input 
                 className={`pl-4 w-[22rem] h-9 border placeholder:text-sm ${questionError ? 'border-red-500  placeholder:text-red-500': 'border-gray  placeholder:text-gray'}`} 
                 placeholder={questionError ? questionError.message : "e.g. Do you have size 5 or 6?"}
@@ -319,12 +319,12 @@ const handleCreateQuestion =async()=>{
 
             {
               questionArray.length == 0 ? (
-                <p> No questions founded </p> 
+                <p className="hidden md:flex"> No questions founded </p> 
               ) : (
                 questionArray.slice(0,3).map((item, i)=>{
                   return (
                     <>
-                    <div className="mb-4" >
+                    <div className="hidden md:block mb-4" >
                  <div className="flex">
                  <p className="max-w-[84%] text-lg font-semibold text-text" > {item.content} </p>
                  <p className="max-w-[84%] ml-3 mt-1 text-sm font-thin text-grayDark" > { item.user.id == session?.user.id ? 'You' :  item.user.email.split('@')[0] } </p>
@@ -372,10 +372,10 @@ const handleCreateQuestion =async()=>{
               )
             }
 
-          <div className="my-6 w-[84%] border border-grayLight"/>
+          <div className="hidden md:block my-6 w-[84%] border border-grayLight"/>
 
           {/*Reviews Section */}
-          <div className="relative mb-10">
+          <div className="hidden md:block relative mb-10">
             <h3 className=" text-xl font-medium text-text"> Reviews </h3>
             <div className="flex gap-7 items-center">
             {
@@ -453,7 +453,7 @@ const handleCreateQuestion =async()=>{
 
 
       { /*Right Side - Product Info */ }            
-      <div className="w-[42%]">
+      <div className="w-full md:w-[42%]">
         <p className="mt-6 mb-1 text-sm font-medium text-text" > {product?.gender} | {product?.product_type} </p>
         <h2 className="mb-2 text-3xl font-semibold text-text"> {product?.name} </h2>
         <p className="my-1 text-sm font-medium text-text" > {product?.sub_title} </p>
@@ -509,8 +509,7 @@ const handleCreateQuestion =async()=>{
           )
         }
 
-        <div className="my-5 w-full border border-grayLight"/>
-
+      <div className="my-5 w-full border border-grayLight "/>
         { /*Sponsered Product */ }
         <SponsoredProductCard />
       </div>
