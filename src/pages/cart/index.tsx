@@ -209,8 +209,8 @@ const Cart = () => {
       </span>
 
       
-      <div className='flex w-full max-h-1/3  overflow-y-scroll'>
-        <div className='mr-14 w-[66%] max-h-1/3 overflow-y-scroll'>
+      <div className='flex flex-col md:flex-row w-full max-h-1/3  overflow-y-scroll'>
+        <div className='mr-14 w-full md:w-[66%] max-h-1/3 overflow-y-scroll'>
             <div className='flex justify-between mb-5 py-3 w-full h-auto border-b border-b-grayLight '>
                 <p className='font-semibold' > Items ({items.length}) </p>
                 <button className='text-sm font-medium text-warning' onClick={removeAll}> Remove all </button>
@@ -222,12 +222,12 @@ const Cart = () => {
               ?
               items.map((item:any)=>{
                 return (
-                  <div className='flex justify-evenly items-center pb-6 border-b border-b-grayLight ' >
-                    <Link className='mt-2' href={`/products/${item.id}`}>
+                  <div className='flex justify-between md:justify-evenly items-center pb-6 border-b border-b-grayLight ' >
+                    <Link className='mt-2 hidden md:block' href={`/products/${item.id}`}>
                     <img src={item.images ? item.images[0] : 'https://www.freeiconspng.com/img/23485'} alt='product' className='w-full h-36 object-contain'/>
 
                     </Link>
-                <div className='flex justify-start' >  
+                <div className='flex justify-center md:justify-start' >  
                     
                     <div className='flex-col w-full' >
                       <Link href={`/products/${item.id}`}>
@@ -285,7 +285,7 @@ const Cart = () => {
             }
 
             { /*Continue Shopping */ }
-              <Link href="/" className='flex items-center mt-4 gap-3' >  
+              <Link href="/" className='hidden md:flex items-center mt-4 gap-3' >  
                 <IconContext.Provider value={{ className:"w-5 h-5" }}>
                   <FaLongArrowAltLeft />
                 </IconContext.Provider>
@@ -295,7 +295,7 @@ const Cart = () => {
 
 
         { /*Product Summary */ }
-        <div className='px-4 pb-5 w-[30%] h-1/3 bg-grayLightSoft_2 '>
+        <div className='px-4 pb-5 w-full md:w-[30%] h-1/3 bg-grayLightSoft_2 '>
             <div className='mb-8 pt-3 pb-2 border-b border-b-grayLight' >
               <p className='font-semibold'> Product Summary </p>
             </div>

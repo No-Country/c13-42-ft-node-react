@@ -80,11 +80,11 @@ const Navbar = ( { products, category }: { products: Product[], category: any|un
           session?.user &&  status == "authenticated" 
           ?
           <>
-          <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} > 
+          <IconContext.Provider value={{ className:"h-5 w-5 text-text hidden md:block" }} > 
             <FaHeart />
           </IconContext.Provider>
 
-          <Link href={session?.user.is_admin ? "/admin/dashboard" : (`/user/${session?.user.id}`)}>
+          <Link className=" hidden md:block" href={session?.user.is_admin ? "/admin/dashboard" : (`/user/${session?.user.id}`)}>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} >   
             <FaUser />
           </IconContext.Provider>
@@ -94,13 +94,19 @@ const Navbar = ( { products, category }: { products: Product[], category: any|un
           : 
           null
         }
-
-          <div className="relative" onClick={() => setIsCartModalOpen(true)}>
+          <div className="relative hidden md:block" onClick={() => setIsCartModalOpen(true)}>
             <IconContext.Provider value={{ className:"h-5 w-5 text-text"}} >
             <FaShoppingCart />
             
             </IconContext.Provider>
           </div>
+
+          <Link href={'/cart'} className=" block md:hidden">
+          <IconContext.Provider value={{ className:"h-5 w-5 text-text"}} >
+            <FaShoppingCart />
+            
+            </IconContext.Provider>
+          </Link>
         </div>
 
         {
@@ -142,20 +148,26 @@ const Navbar = ( { products, category }: { products: Product[], category: any|un
               <button className="absolute right-4" onClick={cerrarMenu}>Cerrar</button>
 
             </div>
-          <div className="flex flex-col border-b-2 border-solid border-whiteLight">
-            <div className="flex py-4 w-full items-center px-8 justify-start text-sm font-normal hover:bg-secondary 
-            hover:duration-300 hover:ease-in">
-              <p> Woman </p>
-            </div>
-            <div className="flex py-4 w-full items-center px-8 justify-start text-sm font-normal hover:bg-secondary 
-              hover:duration-300 hover:ease-in" >
-            <p> Man </p>
-            </div>
-          </div>
+          
           <div className="flex justify-center items-center py-4">
-          <button className=" rounded-md w-40 h-9 text-sm text-white mx-auto bg-secondary" onClick={() => setIsModalOpen(true) } >
-            Sign in
-          </button>
+          {
+          session?.user &&  status == "authenticated" 
+          ?
+          <>
+          <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} > 
+            <FaHeart />
+          </IconContext.Provider>
+
+          <Link href={session?.user.is_admin ? "/admin/dashboard" : (`/user/${session?.user.id}`)}>
+          <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} >   
+            <FaUser />
+          </IconContext.Provider>
+
+          </Link>
+          </>
+          : 
+          null
+        }
           </div>
           
           <div className="flex flex-col items-start w-full h-auto bg-darkBackground text-white">
