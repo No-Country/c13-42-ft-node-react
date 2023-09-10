@@ -253,7 +253,7 @@ const removeOne = (id: string) => {
                         </div>
 
                        <span className=' flex flex-col items-center'>
-                       <p className='text-xl font-semibold text-text'> ${item.price * item.quantity} </p> 
+                       <p className='text-xl font-semibold text-text'> ${Math.round(item.price * item.quantity)} </p> 
                        <p className=' text-sm font-normal text-left  text-text'> {item.quantity > 1 ? `UP:$${item.price}` : null} </p> 
                        </span>
                     </div>

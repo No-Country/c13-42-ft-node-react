@@ -73,20 +73,21 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
     const local = localStorage.getItem('cart') 
     const items = local ?  JSON.parse(local) : []
     let item = items.find((item:any) => item.id === product.id)
-    setSize(item.size ? item.size : (product.product_type === "APPAREL" ?  "M" : '6.5'))
+    console.log(item);
+    
 
     return items
   }
 const handleAddToCart = () => {
-
+  console.log(size);
+  
     const cart = getCart()
     console.log([{...product, quantity: 1},...cart]);
     setSuccess(true)
     if (cart.some((element: any) => element.id === product.id)) {
         const updated = cart.map((item:any)=>{
             if (item.id === product.id) {
-                setSize(item.size)
-                return {...item, quantity: item.quantity + 1, size}
+                return {...item, quantity: item.quantity + 1, size: size}
             }else{
                 return item
             }
@@ -95,7 +96,7 @@ const handleAddToCart = () => {
         localStorage.setItem('cart', JSON.stringify(updated));
         getCart()
     }else{
-        localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1, size},...cart]));
+        localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1, size: size},...cart]));
     }
 
     setTimeout(() => {
