@@ -40,10 +40,13 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
     return item
   }))
 
+
   const [questionInput, setQuestionInput] = useState<string>("")
   const [questionArray, setQuestionArray] = useState<Array<any>>(product.questions)
   const [reviewArray, setReviewArray] = useState<Array<Review>>(product.reviews)
   
+  const [size, setSize] = useState<string>("M")
+
   const [wishlist, setWishlist] = useState<boolean>(session?.user.id && (product.wishlists).some((user: any) => user.userID === session?.user.id) ? true: false  )
 
   const [isShippingModalOpen, setIsShippingModalOpen] = useState(false)
@@ -51,43 +54,60 @@ const ProductDetail = ({product, products}: {product: Product|any, products: any
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
 
+  const [success, setSuccess] = useState(false)
+  const [questionError, setQuestionError] = useState<any>(false)
+
+
+  
+
   
   const averageScore = reviewArray.length > 0 ? Math.round( ((reviewArray.reduce((accumulator, currentValue) => accumulator + currentValue?.score, 0))/reviewArray.length)) : 0
 
 
   useEffect(() => {
     setWishlist(session?.user.id && (product.wishlists).some((user: any) => user.userID === session?.user.id) ? true: false)
-  
+    getCart()
   }, [session])
   
   function getCart() {
     const local = localStorage.getItem('cart') 
     const items = local ?  JSON.parse(local) : []
+    let item = items.find((item:any) => item.id === product.id)
+    setSize(item.size ? item.size : (product.product_type === "APPAREL" ?  "M" : '6.5'))
+
     return items
   }
 const handleAddToCart = () => {
+
     const cart = getCart()
     console.log([{...product, quantity: 1},...cart]);
+    setSuccess(true)
     if (cart.some((element: any) => element.id === product.id)) {
         const updated = cart.map((item:any)=>{
             if (item.id === product.id) {
-                return {...item, quantity: item.quantity + 1}
+                setSize(item.size)
+                return {...item, quantity: item.quantity + 1, size}
             }else{
                 return item
             }
             
         })
         localStorage.setItem('cart', JSON.stringify(updated));
+        getCart()
     }else{
-        localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1},...cart]));
+        localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1, size},...cart]));
     }
+
+    setTimeout(() => {
+      setSuccess(false)
+    }, 2000);
 
 }
 
 
-  const handleCreateQuestion =async()=>{
+const handleCreateQuestion =async()=>{
     try {
-      if(session?.user.id){
+      if(session?.user.id && questionInput.length > 3){
         const question  = await postQuestion(product.id, questionInput, session.user.id)
         console.log(question);
         
@@ -97,10 +117,14 @@ const handleAddToCart = () => {
           setQuestionArray([question, ...questionArray])
           setAnswer([{...question, answer: {content: ''}}, ...answers])
         }
+      }else{
+        throw {message: 'Question has to be at least 3 characters.'}
       }
   
     } catch (error) {
       console.log(error);
+      setQuestionInput('')
+      setQuestionError(error)
       
     }
   }
@@ -141,7 +165,7 @@ const handleAddToCart = () => {
   }
   const handleCreateReview =async(content: string, title: string, score: number)=>{
     try {
-      if(session?.user.id){
+      if(session?.user.id && content.length > 3){
         const review  = await postReview(product.id, content, session.user.id, score, title)
         console.log(review);
         
@@ -151,11 +175,13 @@ const handleAddToCart = () => {
           setReviewArray([review, ...reviewArray])
           closeReviewModal()
         }
+      } else {
+        throw {message: 'Review must be at least 3 characters long.'}
       }
   
     } catch (error) {
       console.log(error);
-      
+      return error
     }
   }
 
@@ -200,7 +226,7 @@ const handleAddToCart = () => {
     setIsReviewModalOpen(false)
   }
 
-  const sizes: string[] = ["xs", "s", "m", "l", "xl", "xxl"]
+  const sizes: string[] = ["XS", "S", "M", "L", "XL", "XXL"]
 
   const bars: bars[] = [
     {
@@ -228,7 +254,7 @@ const handleAddToCart = () => {
 
   return (
     <>
-    <Navbar products={products}/>
+    <Navbar products={products} category={''}/>
     <div className=' flex justify-between mt-20 ml-[10%] mr-[4%] h-auto'>
       <div className="w-[50%]" >
         <img src={product?.images[0]} alt='' className='w-[70%] h-[24rem] object-contain'/>
@@ -242,21 +268,21 @@ const handleAddToCart = () => {
               <div className="flex gap-4" >
 
                 <div 
-                  className="flex justify-center items-center  w-auto px-3 h-8 bg-accentTeal cursor-pointer"
+                  className="flex rounded-md justify-center items-center  w-auto px-3 h-8 bg-accentTeal cursor-pointer"
                   onClick={ () => setIsShippingModalOpen(true)    }
                 >
                   <p className="text-sm  text-text"> Shipping </p>
                 </div>
 
                 <div 
-                  className="flex justify-center items-center  w-auto px-3 h-8 bg-accentTeal cursor-pointer"
+                  className="flex rounded-md justify-center items-center  w-auto px-3 h-8 bg-accentTeal cursor-pointer"
                   onClick={ () => setIsReturnsModalOpen(true)   }
                 >
                   <p className="text-sm  text-text"> Returns </p>
                 </div>
 
                 <div 
-                  className="flex justify-center items-center  w-auto px-3 h-8 bg-accentTeal cursor-pointer"
+                  className="flex rounded-md justify-center items-center  w-auto px-3 h-8 bg-accentTeal cursor-pointer"
                   onClick={ () => setIsPaymentModalOpen(true) }
                 >
                   <p className="text-sm  text-text"> Payment Methods </p>
@@ -273,13 +299,16 @@ const handleAddToCart = () => {
                 <h3 className="mb-2 text-xl font-medium text-text"> Ask to seller  </h3>
             <div className="flex gap-5"  >
               <input 
-                className="pl-4 w-[22rem] h-9 border border-gray placeholder:text-sm placeholder:text-gray" 
-                placeholder="e.g. Do you have size 5 or 6?"
+                className={`pl-4 w-[22rem] h-9 border placeholder:text-sm ${questionError ? 'border-red-500  placeholder:text-red-500': 'border-gray  placeholder:text-gray'}`} 
+                placeholder={questionError ? questionError.message : "e.g. Do you have size 5 or 6?"}
                 value={ questionInput}
-                onChange={ e => setQuestionInput(e.target.value) }
+                onChange={ e => {
+                  setQuestionError(null)
+                  setQuestionInput(e.target.value) }
+                }
               />
               <button onClick={handleCreateQuestion}
-                className="mb-6  w-[5rem] h-9 bg-darkBackground text-white" 
+                className="mb-6 rounded-md  w-[5rem] h-9 bg-darkBackground text-white" 
               > Ask </button>
             </div>
               </>
@@ -326,7 +355,7 @@ const handleAddToCart = () => {
                 })) }
               />
                     <button onClick={()=>{handleAnswer(item.id, answers[i].answer.content)}}
-                      className=" ml-4 w-[5rem] h-9 bg-darkBackground text-white" 
+                      className=" ml-4 w-[5rem] rounded-md h-9 bg-darkBackground text-white" 
                       > Answer </button>
                        </div>
                         :
@@ -363,12 +392,19 @@ const handleAddToCart = () => {
                 }
               </div></>}
             
-              <div className="flex  items-center mt-11 mb-14 ">
+              {
+                session?.user.id 
+                ?
+                <div className="flex  items-center mt-11 mb-14 ">
                     <button 
-                      className="w-52 h-10 bg-darkBackground text-sm text-white" 
+                      className="w-52 h-10 rounded-md bg-darkBackground text-sm text-white" 
                       onClick={() => setIsReviewModalOpen(true) }
                     > Write a review </button> 
-                  </div> 
+              </div> 
+              :
+              null
+
+              }
             </div>
 
             {
@@ -434,12 +470,16 @@ const handleAddToCart = () => {
         <p className="mb-8 text-3xl font-semibold text-text" > ${product?.price}</p>
 
         <div className="mt-4 flex items-center gap-5">
-            <button onClick={handleAddToCart} className="w-56 h-12 bg-darkBackground text-white cursor-pointer"> 
-                Add to cart 
+            <button onClick={handleAddToCart} className={` ${success ? " bg-transparent text-accentTeal border-accentTeal flex items-center justify-center border "  : " bg-darkBackground text-white cursor-pointer  hover:bg-white hover:text-darkBackground  border border-darkBackground"} rounded-md w-56 h-12 duration-300 transition-all `}> 
+                {success ? <>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+</svg>
+                  </> : "Add to cart"} 
             </button>
             <button 
                 disabled={status === 'authenticated' ? false : true}
-                className={`flex justify-center items-center w-12 h-12 text-xl text-text border border-darkBackground cursor-pointer`} 
+                className={`flex rounded-md justify-center items-center w-12 h-12 text-xl text-text border border-darkBackground cursor-pointer`} 
                 onClick={() => 
 
                   handleWishlist() }
@@ -455,9 +495,11 @@ const handleAddToCart = () => {
               <p className="mb-2" > Choose a size </p>
               <div className="flex flex-wrap gap-5  ">
                 {
-                  sizes.map( (size, index) => (
-                    <div key={ index } className="flex justify-center items-center w-14 h-10  border border-black cursor-pointer hover:bg-darkBackground hover:text-white hover:ease-in hover:duration-300" >
-                      <p className="text-sm"> { size } </p>
+                  sizes.map( (item, index) => (
+                    <div onClick={()=>{
+                      setSize(item)
+                    }} key={ index } className={`flex justify-center items-center rounded-md w-10 h-8  border border-black cursor-pointer hover:bg-darkBackground ${size === item ? "bg-darkBackground text-white" : ''} hover:text-white hover:ease-in hover:duration-300`} >
+                      <p className="text-sm"> { item } </p>
                     </div>
                   ))
                 }

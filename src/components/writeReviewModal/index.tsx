@@ -16,6 +16,9 @@ const WriteReviewModal = ({ closeReviewModal, handleCreateReview }: {handleCreat
   const [stars, setStars] = useState<number>(5)
 
 
+  const [error, setError] = useState<any>(false)
+
+
 
   return (
     <div className='absolute top-[58rem] left-0 flex justify-center items-center w-full h-screen bg-modalBackground'>
@@ -33,8 +36,9 @@ const WriteReviewModal = ({ closeReviewModal, handleCreateReview }: {handleCreat
                 className='pl-4 w-full h-9 m-1 border border-grayLight placeholder:text-sm placeholder:text-gray'
             /> */}
             <p className='m-2 text-sm text-text'> Your review* </p>
-            <textarea value={ review } onChange={ e => setReview(e.target.value) }  className=' pl-4 pt-2 w-full bg-white text-grayDark border border-grayLight' cols={ 5 } > </textarea>
-            <p className='text-[0.65rem]'> * Required </p>
+            <textarea placeholder={error ? error.message : ''} value={ review } onChange={ (e) => {
+                setError(false)
+                setReview(e.target.value)} }  className={` pl-4 pt-2 w-full ${error ? 'border-red-500 placeholder:text-red-500 placeholder:text-sm': 'border-grayLight'} bg-white text-grayDark border `}  cols={ 5 } > </textarea>
 
             <div className='my-7'>
                 <p className='mb-1 text-sm text-text'> Rate this product </p>
@@ -62,8 +66,14 @@ const WriteReviewModal = ({ closeReviewModal, handleCreateReview }: {handleCreat
             
 
             <div className='flex  mt-8 mb-11 justify-between'>
-                <button onClick={()=> handleCreateReview(review, inputTitle, stars)} className=' m-3 w-1/2 h-9 bg-black text-sm text-white '> Submit </button>
-                <button onClick={()=> closeReviewModal()} className='w-1/2 m-3 h-9 bg-black text-sm text-white '> Cancel </button>
+                <button disabled={error} onClick={async (e)=> {
+
+                    e.preventDefault()
+                    console.log(error);
+                    
+                    setError( await handleCreateReview(review, inputTitle, stars))
+                }} className={`rounded-md m-3 w-1/2 h-9 ${error ? 'border border-red-500 text-red-500': 'bg-black'} text-sm text-white`} > Submit </button>
+                <button onClick={()=> closeReviewModal()} className='w-1/2 m-3 h-9 bg-black rounded-md text-sm text-white '> Cancel </button>
             </div>
             
         </form>

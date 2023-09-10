@@ -67,6 +67,7 @@ export const createOrder = async(body: createOrderType)=>{
                         return {
                           product: { connect: { id: product.id } },
                           quantity: product.quantity,
+                          size: product.size
                         };
                     })
                 

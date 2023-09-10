@@ -115,6 +115,7 @@ const removeOne = (id: string) => {
               quantity: item.quantity,
               currency_id: 'USD',
               unit_price: item.price,
+              size: item.size
             }
           }
         })
@@ -163,7 +164,7 @@ const removeOne = (id: string) => {
 
   const handleCreateOrder =async ()=>{
     const cart = products.map((item: any)=>{
-      return {id:item.id, quantity: item.quantity}
+      return {id:item.id, quantity: item.quantity, size: item.size}
     })
     const total = products.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
     if (user) {
@@ -228,7 +229,7 @@ const removeOne = (id: string) => {
                             <div>
                                 <p className='-mt-1 mb-1 mr-3 font-semibold text-text'>{item.name} </p>
                                 <p className='text-xs  text-gray'> {item.gender} </p>
-                                <p className='text-xs text-gray' > Size: {item.product_type === 'APPAREL' ? 'M' : '6.5'} </p>
+                                <p className='text-xs text-gray' > Size: {item.size} </p>
                                 
                                 <div className='mt-2 flex items-center gap-3'>
                                     <div 
@@ -269,7 +270,7 @@ const removeOne = (id: string) => {
                     { /*Product Breakdown */}
                     <div className='mb-[0.3rem] flex justify-between'>
                         <p className='text-lg text-gray' > {`Subtotal ( ${ items.length } )` } </p>
-                        <p className='text-lg font-semibold text-text'> ${items.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.price * currentValue.quantity, 0)} </p> 
+                        <p className='text-lg font-semibold text-text'> ${Math.round(items.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.price * currentValue.quantity, 0))} </p> 
                     </div>
                     <div className='flex justify-between'>
                         <p className='text-sm  text-gray' > Shipping </p>

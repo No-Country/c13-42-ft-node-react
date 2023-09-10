@@ -12,6 +12,7 @@ import { cart } from '~/components/cartModal'
 import {  useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { baseUrl } from '~/utils/constants'
+import Footer from '~/components/footer'
 
 
 
@@ -37,6 +38,8 @@ const Cart = () => {
   }, []);
 
   const getCheckoutUrl = async () => {
+    console.log(items);
+    
     seturl(null)
     setId("")
     const cart = items.flatMap((item: any)=>{
@@ -49,10 +52,11 @@ const Cart = () => {
           quantity: item.quantity,
           currency_id: 'USD',
           unit_price: item.price,
+          size: item.size
         }
       }
     })
-    const sum = cart.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+    const sum = Math.round(cart.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0))
   setTotal(sum)
     console.log(cart);
     setProducts(cart)
@@ -99,9 +103,9 @@ const Cart = () => {
 
   const handleCreateOrder =async ()=>{
     const cart = products.map((item: any)=>{
-      return {id:item.id, quantity: item.quantity}
+      return {id:item.id, quantity: item.quantity, size: item.size}
     })
-    const sum = products.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0)
+    const sum = Math.round(products.reduce((accumulator:any, currentValue:any) => accumulator + currentValue.unit_price * currentValue.quantity, 0))
     console.log(sum);
     
     setTotal(sum)
@@ -136,7 +140,7 @@ const Cart = () => {
   const addCount = (id: string) => {
     const updated: any  = items.map((item: any)=>{
       if(item.id ===id){
-        return {...item, quantity: item.quantity+1}
+        return {...item, quantity: item.quantity+1,}
       }
       return item
     })
@@ -146,6 +150,18 @@ const Cart = () => {
 
   }
 
+  const updateSize = (id: string,size: string) => {
+    const updated: any  = items.map((item: any)=>{
+      if(item.id ===id){
+        return {...item, size: size}
+      }
+      return item
+    })
+    setItems(updated)
+    localStorage.setItem('cart', JSON.stringify(updated));
+
+
+  }
   const subtractCount = (id: string) => {
     const updated: any = items.flatMap((item: any)=>{
       if(item.id ===id){
@@ -186,17 +202,17 @@ const Cart = () => {
 
     <>
       
-      <div className='mx-[5%] mb-12'>
+      <div className='mx-[5%] mb-52 h-max-[100vh]  overflow-scroll'>
       <span className=' flex items-center'>
       <Link className='mt-11 mb-6 mr-3 text-xl font-semibold text-text hover:underline' href={'/'}> <BsArrowLeft/></Link>
       <h2 className='mt-11 mb-6 text-xl font-semibold text-text' > Cart Shopping </h2>
       </span>
 
       
-      <div className='flex w-full'>
-        <div className='mr-14 w-[66%]'>
+      <div className='flex w-full max-h-1/3  overflow-y-scroll'>
+        <div className='mr-14 w-[66%] max-h-1/3 overflow-y-scroll'>
             <div className='flex justify-between mb-5 py-3 w-full h-auto border-b border-b-grayLight '>
-                <p className='font-semibold' > Items {items.length} </p>
+                <p className='font-semibold' > Items ({items.length}) </p>
                 <button className='text-sm font-medium text-warning' onClick={removeAll}> Remove all </button>
             </div>
 
@@ -219,7 +235,25 @@ const Cart = () => {
 
                       </Link>
                         <p className='text-sm font-medium text-grayDark' > {item.gender} | {item.product_type} </p>
-                        <p className='mb-2 text-sm font-medium text-grayDark' > Size: {item.product_type === 'APPAREL' ? 'M' : '6.5'} </p>
+                        <p className='mb-2 text-sm font-medium text-grayDark' > Size: 
+                          <select onChange={(e)=>{
+                            updateSize(item.id,e.target.value)
+                            }} value={item.size} name="" id="">
+                            {
+                              item.product_type == "APPAREL"
+                              ?
+                              <>
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                              </>
+                              : null
+                            }
+                          </select>
+                         </p>
                         <div onClick={()=>removeOne(item.id)} className='flex items-center gap-3 hover:text-warning duration-200'  >
                             <IconContext.Provider  value={{ className:"w-3 h-3 text-gray-400 cursor-pointer hover:text-grayDark " }} >
                                 <FaTrash />
@@ -229,7 +263,7 @@ const Cart = () => {
                     </div>
                 </div>
                 <div className='flex flex-col items-center justify-center'>
-                <p className='text-lg font-semibold text-text' > ${ item.price * item.quantity} </p>
+                <p className='text-lg font-semibold text-text' > ${Math.round(item.price * item.quantity) } </p>
                 <div className='mt-2 flex items-center gap-3'>
                                     <div 
                                         className='flex justify-center items-center w-[1.3rem] h-[1.3rem] border border-accentTeal font-semibold text-accentTeal cursor-pointer' 
@@ -261,7 +295,7 @@ const Cart = () => {
 
 
         { /*Product Summary */ }
-        <div className='px-4 pb-5 w-[30%] h-auto bg-grayLightSoft_2 '>
+        <div className='px-4 pb-5 w-[30%] h-1/3 bg-grayLightSoft_2 '>
             <div className='mb-8 pt-3 pb-2 border-b border-b-grayLight' >
               <p className='font-semibold'> Product Summary </p>
             </div>
@@ -338,9 +372,10 @@ const Cart = () => {
             </div>
         </div>
       </div>
-
+      
           
     </div>
+    <Footer/>
     </>
   )
 }
