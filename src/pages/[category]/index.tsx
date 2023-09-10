@@ -5,6 +5,7 @@ import SelectOptions from "~/components/select";
 import { createContext, useState } from "react";
 import Navbar from "~/components/navbar";
 import { GetServerSidePropsContext } from "next";
+import Footer from "~/components/footer";
 
 let any:any = 'any'
 
@@ -30,13 +31,13 @@ export default function Category( {products, category}: { products : Product[], 
   }
   return (
     <ProductContext.Provider value={{ selectOptions, setSelectOptions }}>
-      <Navbar products={products} />
+      <Navbar products={products} category={category}/>
 
       <section className='flex flex-col py-[50px]'>
 
         <SelectOptions/>
         
-        <div className="justify-center items-center grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-8 my-14 mx-[2%]">
+        <div className="justify-center items-center grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-8 mt-14 mb-5 mx-[2%]">
         {
             methodSelectOptions( category === 'All' ? products : products.filter( product => product.category === category)).map((product)  => (
               <ProductCard
@@ -48,6 +49,7 @@ export default function Category( {products, category}: { products : Product[], 
         </div>
         
       </section>
+      <Footer/>
     </ProductContext.Provider>
   );
 }

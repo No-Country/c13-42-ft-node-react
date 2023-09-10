@@ -34,6 +34,27 @@ export const updateOrder = async(body: updateOrderType)=>{
 }
 
 
+export const getOrders = async()=>{
+    const order = await prisma.order.findMany({
+        where:{
+            payment_status:'SUCCESS'
+        },
+        select:{
+            user:{
+                select:{
+                    email: true
+                }
+
+            },
+            total: true,
+            date: true
+
+        }
+    })
+    return order
+}
+
+
 export const createOrder = async(body: createOrderType)=>{
     console.log(body);
     
@@ -46,6 +67,7 @@ export const createOrder = async(body: createOrderType)=>{
                         return {
                           product: { connect: { id: product.id } },
                           quantity: product.quantity,
+                          size: product.size
                         };
                     })
                 

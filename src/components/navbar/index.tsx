@@ -14,7 +14,7 @@ import CartModal from "../cartModal"
 let init: any = 'any'
 export const SearchContext = createContext(init);
 
-const Navbar = ( { products }: { products: Product[] } ) => {
+const Navbar = ( { products, category }: { products: Product[], category: any|undefined } ) => {
   const [searchModal, setSearchModal] = useState<boolean>(false)
   
 
@@ -30,7 +30,7 @@ const Navbar = ( { products }: { products: Product[] } ) => {
 
 
 
-  const categories: string[]= ["All", "American Football", "Baseball", "Basketball", "Football", "Footwear", "Lifestyle", "Running", "Soccer"] 
+  const categories: string[]= ["All", "American Football", "Baseball", "Basketball", "Football", "Lifestyle", "Running", "Soccer"] 
 
 
   const toggleCartModal = () => {
@@ -60,14 +60,7 @@ const Navbar = ( { products }: { products: Product[] } ) => {
         <p className="text-xl font-semibold"> hoodsy </p>
         </Link>
         <div className="hidden lg:flex">
-          <div className="flex h-20 w-28 items-center justify-center text-sm font-normal hover:bg-secondary 
-           hover:duration-300 hover:ease-in">
-            <p> Woman </p>
-          </div>
-          <div className="flex h-20 w-28 items-center justify-center text-sm font-normal hover:bg-secondary 
-            hover:duration-300 hover:ease-in" >
-            <p> Man </p>
-          </div>
+          
         </div>
 
         <div className="relative hidden lg:flex">
@@ -84,14 +77,14 @@ const Navbar = ( { products }: { products: Product[] } ) => {
             </IconContext.Provider>
           </div>
           {
-          session?.user &&  status == "authenticated"
+          session?.user &&  status == "authenticated" 
           ?
           <>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} > 
             <FaHeart />
           </IconContext.Provider>
 
-          <Link href={`/user/${session?.user.id}`}>
+          <Link href={session?.user.is_admin ? "/admin/dashboard" : (`/user/${session?.user.id}`)}>
           <IconContext.Provider value={{ className:"h-5 w-5 text-text" }} >   
             <FaUser />
           </IconContext.Provider>
@@ -113,11 +106,11 @@ const Navbar = ( { products }: { products: Product[] } ) => {
         {
          status == 'unauthenticated' || status === 'loading'
          ?
-          <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => setIsModalOpen(true) } >
+          <button className="rounded-md w-40 h-9 text-sm text-white bg-secondary" onClick={() => setIsModalOpen(true) } >
           Sign in
         </button>
         : 
-        <button className="w-40 h-9 text-sm text-white bg-secondary" onClick={() => signOut() } >
+        <button className="rounded-md w-40 h-9 text-sm text-white bg-secondary" onClick={() => signOut() } >
           Sign out
         </button>
         
@@ -125,9 +118,9 @@ const Navbar = ( { products }: { products: Product[] } ) => {
       </div>
 
       <div className="hidden lg:flex items-center px-[4%] w-full h-auto bg-darkBackground text-white">
-        { categories.map( (category, index) => (
-          <Link href={`${category}`} key={ index } className="flex justify-center items-center w-36 h-12 cursor-pointer hover:bg-favoriteGold hover:ease-in hover:duration-300" >  
-          <p className="text-sm text-center"> { category }</p>
+        { categories.map( (item, index) => (
+          <Link href={`${item}`} key={ index } className={`flex justify-center items-center w-36 h-12 cursor-pointer ${category == item ? 'bg-favoriteGold': '' } hover:bg-favoriteGold hover:ease-in hover:duration-300`} >  
+          <p className="text-sm text-center"> { item }</p>
           </Link>
         ))}
       </div>        
@@ -160,7 +153,7 @@ const Navbar = ( { products }: { products: Product[] } ) => {
             </div>
           </div>
           <div className="flex justify-center items-center py-4">
-          <button className="w-40 h-9 text-sm text-white mx-auto bg-secondary" onClick={() => setIsModalOpen(true) } >
+          <button className=" rounded-md w-40 h-9 text-sm text-white mx-auto bg-secondary" onClick={() => setIsModalOpen(true) } >
             Sign in
           </button>
           </div>

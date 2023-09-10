@@ -3,6 +3,7 @@
 
 import { useState } from 'react'
 import ProductSmallModal from '../productSmallModal'
+import Footer from '../footer'
 
 export interface outfit {
     id: string,
@@ -67,7 +68,7 @@ const ShareYourOutfit= () => {
 
   return (
 
-    <div className='relative w-full h-screen bg-darkBackground text-white'>
+    <div className='relative w-full h-3/4 pb-5  bg-darkBackground text-white'>
       <div >
         <h2 className='pt-12 text-3xl font-medium text-center' > Hoodsy Community </h2>
         <p className='mt-3 mx-[13%] text-center leading-7' > Share your unique style using the hashtag <span className='font-semibold'> #hoodycommunity </span>. Every week we choose the most trendy outfits from our social media. Try it and you can get discounts and special rewards. </p>
@@ -96,6 +97,10 @@ const ShareYourOutfit= () => {
           ))
         }
       </div>
+      <div className='mt-14 '>
+      <Footer/>
+      </div>
+
     </div>
   )
 }

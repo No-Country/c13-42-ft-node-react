@@ -8,6 +8,31 @@ export const getProducts = async()=>{
     return products
 }
 
+export const getProductsAmount = async(n: number)=>{
+    const products:Product[]|any =  await prisma.product.findMany({
+        take: n,
+        orderBy:{
+            views: 'desc'
+        },
+        select: {
+            id:true,
+            views:true,
+            name:true, 
+        }
+    })
+    return products
+}
+export const getProductsAmountMain = async(n: number)=>{
+    const products:Product[]|any =  await prisma.product.findMany({
+        take: n,
+        orderBy:{
+            views: 'desc'
+        },
+        
+    })
+    return products
+}
+
 export const getProductsByID = async(id: string)=>{
     const products:Product|null =  await prisma.product.findUnique({
         where:{id : id},

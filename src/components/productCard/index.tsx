@@ -17,6 +17,7 @@ const ProductCard = ({ product }: {product: Product} ) => {
     const [imgLoad, setImgLoad] = useState<boolean>(false)
     const [showElement, setShowElement] = useState<boolean>(false)
     const [items, setItems] = useState([]);
+    const [success, setSuccess] = useState(false)
 
 
    
@@ -51,6 +52,8 @@ const ProductCard = ({ product }: {product: Product} ) => {
       }
     const handleAddToCart = () => {
         const cart = getCart()
+        setSuccess(true)
+
         console.log([{...product, quantity: 1},...cart]);
         if (cart.some((element: any) => element.id === product.id)) {
             const updated = cart.map((item:any)=>{
@@ -63,9 +66,11 @@ const ProductCard = ({ product }: {product: Product} ) => {
             })
             localStorage.setItem('cart', JSON.stringify(updated));
         }else{
-            localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1},...cart]));
+            localStorage.setItem('cart', JSON.stringify([{...product, quantity: 1, size: product.product_type === "APPAREL"? 'M': '6.5'},...cart]));
         }
-
+        setTimeout(() => {
+            setSuccess(false)
+          }, 2000);
     }
 
 
@@ -97,11 +102,18 @@ const ProductCard = ({ product }: {product: Product} ) => {
                 <p className='mb-1 font-bold  text-text h-20'> { product.name } </p>
                 <p className='mb-4 text-xl font-light'> {`$${product.price}` } </p>
                 <div className='flex justify-center items-center'>
+                    
                     <button onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         handleAddToCart();
-                    }} className='w-28 h-9 bg-darkBackground text-sm text-white rounded-md'> Add to cart </button>
+                    }} className={` ${success ? " bg-transparent text-accentTeal border-accentTeal flex items-center justify-center border "  : " bg-darkBackground text-white cursor-pointer  hover:bg-white hover:text-darkBackground  border border-darkBackground"} rounded-md w-56 h-12 duration-300 transition-all `}> 
+                {success ? <>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+</svg>
+                  </> : "Add to cart"} 
+            </button>
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ const Footer = () => {
     <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
       <span className="text-sm text-white sm:text-center dark:text-gray-400">© 2023 <a href="" className="hover:underline">hoodsy</a>. All Rights Reserved.
     </span>
+    <span className="text-sm text-white sm:text-center dark:text-gray-400">Developed by c13-42-ft-node-react</span>
     <ul className="flex flex-wrap items-center mt-3 text-sm font-medium text-white dark:text-gray-400 sm:mt-0">
         <li>
             <a href="#" className="mr-4 hover:underline md:mr-6 ">About</a>

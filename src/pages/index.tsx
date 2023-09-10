@@ -4,8 +4,9 @@ import Newsletter from "~/components/newsletter";
 import ProductCard from "~/components/productCard";
 import ShareYourOutfit from "~/components/shareYourOutfit";
 
-import { getProducts } from "~/utils/services/products";
+import { getProducts, getProductsAmount, getProductsAmountMain } from "~/utils/services/products";
 import Navbar from "~/components/navbar";
+import Footer from "~/components/footer";
 export interface Clothing {
   id: number,
   brand: string,
@@ -54,7 +55,7 @@ export interface Clothing {
 export default function Home({products}:{ products: Product[]}) {
   return (
     <>
-      <Navbar products={products} />
+      <Navbar products={products}  category={''}/>
 
       <HeroSlider />
 
@@ -62,7 +63,7 @@ export default function Home({products}:{ products: Product[]}) {
         <h2 className='mb-7 text-lg font-semibold text-text'> Recommended for you </h2>
 
         <div className="justify-center items-center grid grid-cols-[repeat(auto-fit,minmax(250px,250px))] gap-4 my-14 mx-[2%]">          {
-            products.slice(0,4).map((product)  => (
+            products.map((product)  => (
               <ProductCard
                 key={ product.id } 
                 product={ product }
@@ -79,6 +80,7 @@ export default function Home({products}:{ products: Product[]}) {
       <section>
         <ShareYourOutfit />
       </section>
+      
     </>
   );
 }
@@ -87,7 +89,7 @@ export default function Home({products}:{ products: Product[]}) {
 export async function getServerSideProps() {
   // Fetch data from external API
   try {
-    const products: Product[]  = await getProducts()
+    const products: Product[]  = await getProductsAmountMain(5)
     return { props: { products: products } }
   } catch (error) {
     console.log(error);
