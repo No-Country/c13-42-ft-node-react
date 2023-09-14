@@ -100,7 +100,7 @@ const ProductCard = ({ product }: {product: Product} ) => {
             <div key={ product.id } className='mx-[5%] mt-5' >
                 <h3 className='text-xs  text-stone-400 uppercase'> { product.brand } </h3>
                 <p className='mb-1 font-bold  text-text h-20'> { product.name } </p>
-                <p className='mb-4 text-xl font-light'> {`$${product.price}` } </p>
+                <p className='mb-4 text-xl font-light'> {`$${Math.round(product.price)}` } </p>
                 <div className='flex justify-center items-center'>
                     
                     <button onClick={(e) => {

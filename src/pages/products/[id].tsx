@@ -468,7 +468,7 @@ const handleCreateQuestion =async()=>{
             </IconContext.Provider>
         </div>
 
-        <p className="mb-8 text-3xl font-semibold text-text" > ${product?.price}</p>
+        <p className="mb-8 text-3xl font-semibold text-text" > ${Math.round(product?.price)}</p>
 
         <div className="mt-4 flex items-center gap-5">
             <button onClick={handleAddToCart} className={` ${success ? " bg-transparent text-accentTeal border-accentTeal flex items-center justify-center border "  : " bg-darkBackground text-white cursor-pointer  hover:bg-white hover:text-darkBackground  border border-darkBackground"} rounded-md w-56 h-12 duration-300 transition-all `}> 
