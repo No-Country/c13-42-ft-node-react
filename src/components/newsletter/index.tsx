@@ -14,6 +14,7 @@ const Newsletter = () => {
   const handleSubscribe =async()=>{
     try {
       if(inputMailNewsletter.length > 3){
+        setInputMailNewsletter('')
         setSuccess(true)
         setTimeout(() => {
           setSuccess(false)
