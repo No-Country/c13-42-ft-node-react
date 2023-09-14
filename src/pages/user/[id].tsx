@@ -277,7 +277,7 @@ export default function User({user}:{user: User|any }) {
   
         </div>
         {
-          user.order.map((item: Order)=>{
+          user.order.map((item: Order|any)=>{
             console.log(item);
             
             return (
