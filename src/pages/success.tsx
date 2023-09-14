@@ -23,7 +23,7 @@ export default function Success({order}:{order: Order|any }) {
                 <p className="text-gray-600 my-2">Thank you for completing your secure online payment.</p>
                 <p> Have a great day!  </p>
                 <div className="py-10 text-center flex justify-center items-center">
-                    <Link href="/" className=" m-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-darkBackground border border-darkBackground font-normal py-2 hover:bg-darkBackground hover:text-white duration-200">
+                    <Link href="/" className=" m-3 px-4 bg-accentTeal hover:bg-white  text-white border border-accentTeal rounded-md font-normal py-2 hover:text-accentTeal  duration-200">
                         GO BACK 
                    </Link>
                    <button onClick={()=>{getPdf({client:{email: order.user.email}, invoice: {
@@ -34,8 +34,8 @@ export default function Success({order}:{order: Order|any }) {
                     }),
                     total: order.total,
                     status: order.payment_status
-                   }})}} className="px-8 m-3 p-3 bg-indigo-600 hover:bg-indigo-500 text-darkBackground border border-darkBackground font-semibold py-3 hover:bg-darkBackground hover:text-white duration-200">
-                        <BsDownload/> 
+                   }})}} className="px-8 m-3 p-3 bg-accentTeal hover:bg-white  text-white border border-accentTeal hover:text-accentTeal rounded-md font-bold duration-200">
+                        <BsDownload fontWeight={700}/> 
                    </button>
                 </div>
             </div>
