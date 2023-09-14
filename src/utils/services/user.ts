@@ -8,7 +8,19 @@ export const getUser = async(id: string)=>{
             id: id
         },
         include: {
-            order: true,
+            order: {
+                orderBy: {
+                    date: 'desc'
+                },
+                include:{
+                    products:{
+                        include:{
+                            product:true
+                        }
+                    }
+                },
+                
+            },
             wishlist: {
                 select: {
                     id:true,
