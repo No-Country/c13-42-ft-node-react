@@ -1,6 +1,6 @@
 # c13-42-ft-node-react / hoodsy
 
-La página web Hoody es una tienda en línea que sirve de catálogo de productos para ser consultado por un potencial cliente. Dentro de ella se pueden encontrar todos los productos a la venta organizados por categorías. Además el usuario podrá consultar más información de los productos, ya sea por la información detallada o consultándolo por chat. También podrá agregar los productos a una Wishlist y un carrito de compras.
+La página web Hoodsy es una tienda en línea que sirve de catálogo de productos para ser consultado por un potencial cliente. Dentro de ella se pueden encontrar todos los productos a la venta organizados por categorías. Además el usuario podrá consultar más información de los productos, ya sea por la información detallada o consultándolo por chat. También podrá agregar los productos a una Wishlist y un carrito de compras.
 
 ## Technologies
 Project is created with:
