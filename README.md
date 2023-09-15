@@ -2,10 +2,7 @@
 
 La página web Hoodsy es una tienda en línea que sirve de catálogo de productos para ser consultado por un potencial cliente. Dentro de ella se pueden encontrar todos los productos a la venta organizados por categorías. Además el usuario podrá consultar más información de los productos, ya sea por la información detallada o consultándolo por chat. También podrá agregar los productos a una Wishlist y un carrito de compras.
 
-[![Watch the video](https://img.youtube.com/vi/yn6CnznAl08/hqdefault.jpg)](https://www.youtube.com/embed/yn6CnznAl08)
-
-[<img src="https://img.youtube.com/vi/yn6CnznAl08/hqdefault.jpg" width="600" height="300"
-/>](https://www.youtube.com/embed/yn6CnznAl08)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yn<iframe width="560" height="315" src="https://www.youtube.com/embed/yn6CnznAl08?si=_FAg2Ofy9QqMQvOe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>6CnznAl08?si=_FAg2Ofy9QqMQvOe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 
 ## Technologies
